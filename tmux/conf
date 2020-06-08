@@ -1,0 +1,51 @@
+# Avoid breaking vim
+set -sg escape-time 0
+
+# color bc pretty
+set -g default-terminal "xterm-256color"
+set -ga terminal-overrides ",*-256col*:Tc"
+
+# enable vi mode buffer navigation on leader + [
+set-window-option -g mode-keys vi
+
+set -g mouse on
+
+# change leader to C-a
+unbind C-b
+set-option -g prefix C-a
+bind-key C-a send-prefix
+
+# titles for windows on
+set -g set-titles on
+
+bind-key | split-window -h
+bind-key - split-window -v
+
+bind-key J resize-pane -D 5
+bind-key K resize-pane -U 5
+bind-key H resize-pane -L 5
+bind-key L resize-pane -R 5
+
+# Vim style pane selection
+bind h select-pane -L
+bind j select-pane -D 
+bind k select-pane -U
+bind l select-pane -R
+
+# Use Alt-vim keys without prefix key to switch panes
+bind -n M-h select-pane -L
+bind -n M-j select-pane -D 
+bind -n M-k select-pane -U
+bind -n M-l select-pane -R
+
+# tmux copy/paste is now like vim
+ bind-key -T copy-mode-vi v send-keys -X begin-selection
+  bind-key -T copy-mode-vi y send-keys -X copy-selection
+   bind-key -T copy-mode-vi r send-keys -X rectangle-toggle
+
+# For vi copy mode bindings
+bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel "xclip -selection clipboard -i"
+# For emacs copy mode bindings
+bind-key -T copy-mode MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel "xclip -selection clipboard -i"
+bind -T copy-mode-vi y send -X copy-pipe "xclip -selection c"
+

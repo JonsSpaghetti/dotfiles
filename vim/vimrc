@@ -1,0 +1,381 @@
+set nocompatible              " be iMproved, required
+filetype off                  " required
+
+let mapleader = ","
+source ./basic.vim
+source ./filetypes.vim
+source ./extended.vim
+
+
+let g:python3_host_prog = '/Users/jonathan.tan/.pyenv/versions/nvim/bin/python'
+
+" ============================================Initialize plugin system============================================
+call plug#begin('~/.nvim/plugged')
+
+Plug 'joshdick/onedark.vim'
+
+Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+
+" Plugin outside ~/.vim/plugged with post-update hook
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'yuki-ycino/fzf-preview.vim'
+
+" Syntax highlighting
+Plug 'numirias/semshi'
+
+" indent
+Plug 'Vimjas/vim-python-pep8-indent'
+
+" Linting
+Plug 'dense-analysis/ale'
+
+" comment via gcc
+Plug 'tpope/vim-commentary'
+
+" allow Shift+[ to move through classes /functions
+Plug 'jeetsukumaran/vim-pythonsense'
+
+" pairing quotes etc.
+Plug 'jiangmiao/auto-pairs'
+
+" folding
+Plug 'tmhedberg/SimpylFold'
+
+" autocomplete
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+" fuzzy searching
+" Plug 'kien/ctrlp.vim'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+
+" ctags
+Plug 'majutsushi/tagbar'
+
+" ctrl shift f
+" Plug 'dyng/ctrlsf.vim'
+
+" git
+Plug 'tpope/vim-fugitive'
+
+"status bar
+Plug 'vim-airline/vim-airline'
+
+"wiki/notetaking
+Plug 'vimwiki/vimwiki'
+
+" vim surround
+Plug 'tpope/vim-surround'
+
+" vim repeat
+Plug 'tpope/vim-repeat'
+
+" SQLLLLLLL
+Plug 'tpope/vim-dadbod'
+Plug 'kristijanhusak/vim-dadbod-ui'
+
+call plug#end()
+
+" ============================================Theme settings============================================
+let g:onedark_hide_endofbuffer = 1
+let g:onedark_termcolors= 16
+" More color stuff
+if (has("termguicolors"))
+  set termguicolors
+endif
+
+" ============================================ALE settings============================================
+let g:ale_linters = {
+      \   'python': ['flake8'],
+      \   'ruby': ['standardrb', 'rubocop'],
+      \   'javascript': ['eslint'],
+      \}
+
+let g:ale_fixers = {
+      \    'python': ['black'],
+      \}
+nmap <F10> :ALEFix<CR>
+let g:ale_fix_on_save = 1
+
+set runtimepath+=~/.vim_runtime
+
+function! LinterStatus() abort
+  let l:counts = ale#statusline#Count(bufnr(''))
+
+  let l:all_errors = l:counts.error + l:counts.style_error
+  let l:all_non_errors = l:counts.total - l:all_errors
+
+  return l:counts.total == 0 ? '✨ all good ✨' : printf(
+        \   '😞 %dW %dE',
+        \   all_non_errors,
+        \   all_errors
+        \)
+endfunction
+
+set statusline=
+set statusline+=%m
+set statusline+=\ %f
+set statusline+=%=
+set statusline+=\ %{LinterStatus()}
+
+" ============================================Coc settings============================================
+nnoremap <silent> ,k :call <SID>show_documentation()<CR>
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
+nmap <silent> rn <Plug>(coc-rename)
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gr <Plug>(coc-references)
+
+nnoremap <A-j> :m .+1<CR>==
+nnoremap <A-k> :m .-2<CR>==
+inoremap <A-j> <Esc>:m .+1<CR>==gi
+inoremap <A-k> <Esc>:m .-2<CR>==gi
+vnoremap <A-j> :m '>+1<CR>gv=gv
+vnoremap <A-k> :m '<-2<CR>gv=gv
+
+"" ============================================FZF config===========================================
+"" An action can be a reference to a function that processes selected lines
+"function! s:build_quickfix_list(lines)
+"  call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
+"  copen
+"  cc
+"endfunction
+
+""Use fzf instead of ctrlp & ctrlsf?!?!
+"let g:fzf_action = {
+"\ 'ctrl-q': function('s:build_quickfix_list'),
+"\ 'ctrl-t': 'tab split',
+"\ 'ctrl-x': 'split',
+"\ 'ctrl-v': 'vsplit' }
+
+""Floating window
+"if has('nvim-0.4.0') || has("patch-8.2.0191")
+"    let g:fzf_layout = { 'window': {
+"                \ 'width': 0.9,
+"                \ 'height': 0.7,
+"                \ 'highlight': 'Comment',
+"                \ 'rounded': v:false } }
+"else
+"    let g:fzf_layout = { "window": "silent botright 16split enew" }
+"endif
+
+"" Keymaps
+"nmap <C-p> :Files<CR>
+"nnoremap <Leader>f :Rg<Space>
+"nnoremap <Leader>fl :FZFMru<CR>
+
+"" ripgrep if possible
+"if executable('rg')
+"  let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --glob "!.git/*"'
+
+"  set grepprg=rg\ --vimgrep
+"command! -bang -nargs=? -complete=dir Files
+"    \ call fzf#vim#files(<q-args>, fzf#vim#with_preview({'options': ['--layout=reverse', '--info=inline']}), <bang>0)
+"command! -bang -nargs=* Rg
+"    \ call fzf#vim#grep(
+"    \   'rg --column --line-number --no-heading --color=always --smart-case -- '.shellescape(<q-args>), 1,
+"    \   fzf#vim#with_preview({'options': ['--bind', 'p:toggle-preview']}), <bang>0) " rg
+"nnoremap <silent> <Leader>fa :Find<CR> 
+"nnoremap <Leader>fw :Rg<Space><C-r><C-w><CR>
+"endif
+
+"" MRU search
+"command! FZFMru call fzf#run({
+"\ 'source':  s:all_files(),
+"\ 'sink':    'edit',
+"\ 'options': '-m -x +s',
+"\ 'down':    '40%' })
+
+"function! s:all_files()
+"  return extend(
+"  \ filter(copy(v:oldfiles),
+"  \        "v:val !~ 'fugitive:\\|NERD_tree\\|^/tmp/\\|.git/'"),
+"  \ map(filter(range(1, bufnr('$')), 'buflisted(v:val)'), 'bufname(v:val)'))
+"endfunction
+
+
+"============================================FzfPreview config============================================
+
+" Set up bat for preview window syntax highlighting etc
+let $BAT_THEME = 'base16'
+nmap <C-p> :FzfPreviewProjectFiles<CR> 
+nnoremap <silent> <Leader>f :FzfPreviewProjectGrep<Space>
+nnoremap <silent> <Leader>fw :FzfPreviewProjectGrep<Space><C-r><C-w><CR> 
+nnoremap <silent> <Leader>fal :FzfPreviewMruFiles<CR>
+nnoremap <silent> <Leader>fl :FzfPreviewProjectOldFiles<CR>
+nnoremap <silent> <Leader>fg :FzfPreviewGitStatus<CR>
+nnoremap <silent> <Leader>fm :FzfPreviewMarks<CR>
+
+"============================================CtrlP config============================================
+" " ctrlp settings
+" let g:ctrlp_map = '<c-p>'
+" let g:ctrlp_cmd = 'CtrlP'
+
+" " use rg for ctrlp if we can.
+" if executable('rg')
+"   set grepprg=rg\ --color=never
+"   let g:ctrlp_user_command = 'rg %s --files --color=never --glob ""'
+"   let g:ctrlp_use_caching = 0
+" endif
+" let g:ctrlp_extensions = ['buffertag', 'tag', 'line', 'dir']
+
+" ============================================Tagbar settings============================================
+nmap <c-t> :TagbarToggle<CR>
+nnoremap <space> za
+nmap <c-t>f :TagbarTogglePause<CR>
+
+" ============================================vim-fugitive settings============================================
+map <Leader>g :Git
+map <Leader>gd :Gvdiff
+map <Leader>g2 :diffget2
+map <Leader>g3 :diffget3
+map <Leader>gu :diffupdate
+
+" ============================================CtrlSF settings============================================
+" nmap     <C-F>f <Plug>CtrlSFPrompt
+" vmap     <C-F>f <Plug>CtrlSFVwordPath
+" vmap     <C-F>F <Plug>CtrlSFVwordExec
+" nmap     <C-F>n <Plug>CtrlSFCwordExec
+" nmap     <C-F>p <Plug>CtrlSFPwordPath
+" nnoremap <C-F>o :CtrlSFOpen<CR>
+" nnoremap <C-F>t :CtrlSFToggle<CR>
+" inoremap <C-F>t <Esc>:CtrlSFToggle<CR>
+" nmap <Leader>n <Plug>CtrlSFCwordExec
+" nmap <Leader>f <Plug>CtrlSFPrompt
+" let g:ctrlsf_auto_focus = {
+"     \ "at" : "done",
+"     \ "duration_less_than": 1000
+"     \ }
+
+" ============================================Nerdtree settings============================================
+map <C-n> :NERDTreeToggle<CR>
+" Autoclose if it's the only thing left open.
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+let g:NERDTreeWinPos = 'left'
+
+
+" ============================================OTHER SETTINGS============================================
+"Unmap ctrlf since we use ctrl d for pagedown anyway
+map <c-f> <Nop>
+
+" " Go to tab by number
+noremap <Leader>1 1gt
+noremap <Leader>2 2gt
+noremap <Leader>3 3gt
+noremap <Leader>4 4gt
+noremap <Leader>5 5gt
+noremap <Leader>6 6gt
+noremap <Leader>7 7gt
+noremap <Leader>8 8gt
+noremap <Leader>9 9gt
+noremap <Leader>0 :tablast<cr>
+" Move left/right in tabs easily
+nnoremap H gT
+nnoremap L gt
+
+" Remap scroll keys
+nnoremap J <c-d>
+nnoremap K <c-u>
+
+"Unmap esc so we use capslock (ctrl) + [
+inoremap jk <esc>
+
+"Easier yanking/pasting to/from system register
+map <Leader>y "*y
+map <Leader>p "*p
+
+"map terminal normal mode bck to esc
+:tnoremap jk <C-\><C-n>
+
+" turn hybrid line numbers on
+:set number relativenumber
+:set nu rnu
+
+" Trigger `autoread` when files changes on disk
+" https://unix.stackexchange.com/questions/149209/refresh-changed-content-of-file-opened-in-vim/383044#383044
+" https://vi.stackexchange.com/questions/13692/prevent-focusgained-autocmd-running-in-command-line-editing-mode
+    autocmd FocusGained,BufEnter,CursorHold,CursorHoldI *
+            \ if mode() !~ '\v(c|r.?|!|t)' && getcmdwintype() == '' | checktime | endif
+
+" Notification after file change
+" https://vi.stackexchange.com/questions/13091/autocmd-event-for-autoread
+autocmd FileChangedShellPost *
+  \ echohl WarningMsg | echo "File changed on disk. Buffer reloaded." | echohl None
+
+" Smart way to move between windows
+map <C-j> <C-W>j
+map <C-k> <C-W>k
+map <C-h> <C-W>h
+map <C-l> <C-W>l
+
+" Specify the behavior when switching between buffers 
+try
+  set switchbuf=useopen,usetab,newtab
+  set stal=2
+catch
+endtry
+
+" Useful mappings for managing tabs
+map <leader>tn :tabnew<cr>
+map <leader>to :tabonly<cr>
+map <leader>tc :tabclose<cr>
+map <leader>tm :tabmove 
+map <leader>t<leader> :tabnext 
+
+" Return to last edit position when opening files (You want this!)
+au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+
+" Set font according to system
+if has("mac") || has("macunix")
+    set gfn=IBM\ Plex\ Mono:h14,Hack:h14,Source\ Code\ Pro:h15,Menlo:h15
+elseif has("win16") || has("win32")
+    set gfn=IBM\ Plex\ Mono:h14,Source\ Code\ Pro:h12,Bitstream\ Vera\ Sans\ Mono:h11
+elseif has("gui_gtk2")
+    set gfn=IBM\ Plex\ Mono\ 14,:Hack\ 14,Source\ Code\ Pro\ 12,Bitstream\ Vera\ Sans\ Mono\ 11
+elseif has("linux")
+    set gfn=IBM\ Plex\ Mono\ 14,:Hack\ 14,Source\ Code\ Pro\ 12,Bitstream\ Vera\ Sans\ Mono\ 11
+elseif has("unix")
+    set gfn=Monospace\ 11
+endif
+
+" Sets how many lines of history VIM has to remember
+set history=500
+
+" Enable filetype plugins
+filetype plugin on
+filetype indent on
+
+" Set to auto read when a file is changed from the outside
+set autoread
+au FocusGained,BufEnter * checktime
+
+
+" Fast saving
+nmap <leader>w :w!<cr>
+" Remap VIM 0 to first non-blank character
+map 0 ^
+
+" Disable scrollbars
+set guioptions-=r
+set guioptions-=R
+set guioptions-=l
+set guioptions-=L
+
+" Turn persistent undo on 
+try
+    set undodir=~/.vim_runtime/temp_dirs/undodir
+    set undofile
+catch
+endtry
+
+
+" Tired of files splitting on the left pane.  That's where I work.
+set splitright
+
+colo onedark
+syntax on
