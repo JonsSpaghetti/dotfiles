@@ -47,8 +47,14 @@ function create_symlinks {
 
 create_symlinks
 
+nvm install 12
+nvm alias default 12
+
 echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.zshrc
 echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.zshrc
+
+touch ~/.zshrc.aliases
+touch ~/.zshrc.loc
 
 echo "Success!"
 echo "Please create/edit .zshrc.aliases to add aliases."
