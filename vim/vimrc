@@ -2,9 +2,9 @@ set nocompatible              " be iMproved, required
 filetype off                  " required
 
 let mapleader = ","
-source ./basic.vim
-source ./filetypes.vim
-source ./extended.vim
+source ~/.vim_runtime/vimrcs/basic.vim
+source ~/.vim_runtime/vimrcs/filetypes.vim
+source ~/.vim_runtime/vimrcs/extended.vim
 
 
 let g:python3_host_prog = '/Users/jonathan.tan/.pyenv/versions/nvim/bin/python'
@@ -69,9 +69,22 @@ Plug 'tpope/vim-surround'
 " vim repeat
 Plug 'tpope/vim-repeat'
 
-" SQLLLLLLL
-Plug 'tpope/vim-dadbod'
-Plug 'kristijanhusak/vim-dadbod-ui'
+" vim dispatch
+Plug 'tpope/vim-dispatch'
+
+" " SQLLLLLLL
+" Plug 'tpope/vim-dadbod'
+" Plug 'kristijanhusak/vim-dadbod-ui'
+
+" vim-motion 
+Plug 'easymotion/vim-easymotion'
+
+" C#
+Plug 'OmniSharp/omnisharp-vim'
+
+" Typescript
+Plug 'leafgarland/typescript-vim'
+Plug 'peitalin/vim-jsx-typescript'
 
 call plug#end()
 
@@ -88,6 +101,7 @@ let g:ale_linters = {
       \   'python': ['flake8'],
       \   'ruby': ['standardrb', 'rubocop'],
       \   'javascript': ['eslint'],
+      \   'cs': ['OmniSharp']
       \}
 
 let g:ale_fixers = {
@@ -104,8 +118,8 @@ function! LinterStatus() abort
   let l:all_errors = l:counts.error + l:counts.style_error
   let l:all_non_errors = l:counts.total - l:all_errors
 
-  return l:counts.total == 0 ? '✨ all good ✨' : printf(
-        \   '😞 %dW %dE',
+  return l:counts.total == 0 ? '‚ú® all good ‚ú®' : printf(
+        \   'üòû %dW %dE',
         \   all_non_errors,
         \   all_errors
         \)
@@ -137,6 +151,93 @@ inoremap <A-j> <Esc>:m .+1<CR>==gi
 inoremap <A-k> <Esc>:m .-2<CR>==gi
 vnoremap <A-j> :m '>+1<CR>gv=gv
 vnoremap <A-k> :m '<-2<CR>gv=gv
+
+" Remap scrolling through autocomplete suggestions
+imap <expr> <C-j> pumvisible() ? "\<C-n>" : "\<C-j>"
+imap <expr> <C-k> pumvisible() ? "\<C-p>" : "\<C-k>"
+
+" Use tab for snippet expand etc., not any other hokey hotkeys
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? coc#_select_confirm() :
+      \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+let g:coc_snippet_next = '<tab>'
+
+if exists('*complete_info')
+  inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+else
+  inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+endif
+
+" " Use <C-l> for trigger snippet expand.
+" imap <C-l> <Plug>(coc-snippets-expand)
+
+" " Use <C-j> for select text for visual placeholder of snippet.
+" vmap <C-j> <Plug>(coc-snippets-select)
+
+" " Use <C-j> for jump to next placeholder, it's default of coc.nvim
+" let g:coc_snippet_next = '<c-j>'
+
+" " Use <C-k> for jump to previous placeholder, it's default of coc.nvim
+" let g:coc_snippet_prev = '<c-k>'
+
+" " Use <C-j> for both expand and jump (make expand higher priority.)
+" imap <C-j> <Plug>(coc-snippets-expand-jump)
+
+"" ============================================Omnisharp config===========================================
+let g:OmniSharp_selector_ui = 'fzf'    " Use fzf
+let g:OmniSharp_selector_findusages = 'fzf'
+
+augroup omnisharp_commands
+  autocmd!
+
+  " Show type information automatically when the cursor stops moving.
+  " Note that the type is echoed to the Vim command line, and will overwrite
+  " any other messages in this space including e.g. ALE linting messages.
+  autocmd CursorHold *.cs OmniSharpTypeLookup
+
+  " The following commands are contextual, based on the cursor position.
+  autocmd FileType cs nmap <silent> <buffer> gd <Plug>(omnisharp_go_to_definition)
+  autocmd FileType cs nmap <silent> <buffer> <Leader>fu <Plug>(omnisharp_find_usages)
+  autocmd FileType cs nmap <silent> <buffer> <Leader>fi <Plug>(omnisharp_find_implementations)
+  autocmd FileType cs nmap <silent> <buffer> <Leader>pd <Plug>(omnisharp_preview_definition)
+  autocmd FileType cs nmap <silent> <buffer> <Leader>pi <Plug>(omnisharp_preview_implementations)
+  autocmd FileType cs nmap <silent> <buffer> <Leader>t <Plug>(omnisharp_type_lookup)
+  autocmd FileType cs nmap <silent> <buffer> <Leader>k <Plug>(omnisharp_documentation)
+  autocmd FileType cs nmap <silent> <buffer> <Leader>fx <Plug>(omnisharp_find_symbol)
+  autocmd FileType cs nmap <silent> <buffer> <Leader>fx <Plug>(omnisharp_fix_usings)
+  autocmd FileType cs nmap <silent> <buffer> <Leader>s <Plug>(omnisharp_signature_help)
+  autocmd FileType cs imap <silent> <buffer> <C-\> <Plug>(omnisharp_signature_help)
+
+  " Navigate up and down by method/property/field
+  autocmd FileType cs nmap <silent> <buffer> [[ <Plug>(omnisharp_navigate_up)
+  autocmd FileType cs nmap <silent> <buffer> ]] <Plug>(omnisharp_navigate_down)
+  " Find all code errors/warnings for the current solution and populate the quickfix window
+  autocmd FileType cs nmap <silent> <buffer> <Leader>osgcc <Plug>(omnisharp_global_code_check)
+  " Contextual code actions (uses fzf, vim-clap, CtrlP or unite.vim selector when available)
+  autocmd FileType cs nmap <silent> <buffer> <Leader>osca <Plug>(omnisharp_code_actions)
+  autocmd FileType cs xmap <silent> <buffer> <Leader>osca <Plug>(omnisharp_code_actions)
+  " Repeat the last code action performed (does not use a selector)
+  autocmd FileType cs nmap <silent> <buffer> <Leader>os. <Plug>(omnisharp_code_action_repeat)
+  autocmd FileType cs xmap <silent> <buffer> <Leader>os. <Plug>(omnisharp_code_action_repeat)
+
+  autocmd FileType cs nmap <silent> <buffer> <Leader>os= <Plug>(omnisharp_code_format)
+
+  autocmd FileType cs nmap <silent> <buffer> <Leader>osnm <Plug>(omnisharp_rename)
+
+  autocmd FileType cs nmap <silent> <buffer> <Leader>osre <Plug>(omnisharp_restart_server)
+  autocmd FileType cs nmap <silent> <buffer> <Leader>osst <Plug>(omnisharp_start_server)
+  autocmd FileType cs nmap <silent> <buffer> <Leader>ossp <Plug>(omnisharp_stop_server)
+augroup END
+
+
 
 "" ============================================FZF config===========================================
 "" An action can be a reference to a function that processes selected lines
@@ -230,27 +331,13 @@ nnoremap <space> za
 nmap <c-t>f :TagbarTogglePause<CR>
 
 " ============================================vim-fugitive settings============================================
-map <Leader>g :Git
-map <Leader>gd :Gvdiff
-map <Leader>g2 :diffget2
-map <Leader>g3 :diffget3
-map <Leader>gu :diffupdate
+map <Leader>g :Git<CR>
+map <Leader>gvd :Gvdiff<CR>
+map <Leader>gvds :Gvdiffsplit!<CR>
+map <Leader>g2 :diffget //2<CR>
+map <Leader>g3 :diffget //3<CR>
+map <Leader>gu :diffupdate<CR>
 
-" ============================================CtrlSF settings============================================
-" nmap     <C-F>f <Plug>CtrlSFPrompt
-" vmap     <C-F>f <Plug>CtrlSFVwordPath
-" vmap     <C-F>F <Plug>CtrlSFVwordExec
-" nmap     <C-F>n <Plug>CtrlSFCwordExec
-" nmap     <C-F>p <Plug>CtrlSFPwordPath
-" nnoremap <C-F>o :CtrlSFOpen<CR>
-" nnoremap <C-F>t :CtrlSFToggle<CR>
-" inoremap <C-F>t <Esc>:CtrlSFToggle<CR>
-" nmap <Leader>n <Plug>CtrlSFCwordExec
-" nmap <Leader>f <Plug>CtrlSFPrompt
-" let g:ctrlsf_auto_focus = {
-"     \ "at" : "done",
-"     \ "duration_less_than": 1000
-"     \ }
 
 " ============================================Nerdtree settings============================================
 map <C-n> :NERDTreeToggle<CR>
@@ -258,6 +345,32 @@ map <C-n> :NERDTreeToggle<CR>
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 let g:NERDTreeWinPos = 'left'
 
+" ============================================Easymotion settings============================================
+let g:EasyMotion_do_mapping = 0 " Disable default mappings
+
+" Jump to anywhere you want with minimal keystrokes, with just one key binding.
+" " `s{char}{label}`
+" nmap <Leader>s <Plug>(easymotion-overwin-f)
+" " or
+" " `s{char}{char}{label}`
+" " Need one more keystroke, but on average, it may be more comfortable.
+" nmap <Leader>s <Plug>(easymotion-overwin-f2)
+
+" " Turn on case-insensitive feature
+" let g:EasyMotion_smartcase = 1
+
+" " JK motions: Line motions
+" map <Leader>j <Plug>(easymotion-j)
+" map <Leader>k <Plug>(easymotion-k)
+
+
+" ============================================Typescript settings============================================
+" set filetypes as typescriptreact
+autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescriptreact
+autocmd FileType javascript setlocal ts=2 sts=2 sw=2
+autocmd FileType javascriptreact setlocal ts=2 sts=2 sw=2
+autocmd FileType typescript setlocal ts=2 sts=2 sw=2
+autocmd FileType typescriptreact setlocal ts=2 sts=2 sw=2
 
 " ============================================OTHER SETTINGS============================================
 "Unmap ctrlf since we use ctrl d for pagedown anyway
@@ -289,12 +402,19 @@ inoremap jk <esc>
 map <Leader>y "*y
 map <Leader>p "*p
 
+"Run code
+xnoremap <leader>rvp :w !python<CR>
+nnoremap <leader>rp :w !python<CR>
+
 "map terminal normal mode bck to esc
 :tnoremap jk <C-\><C-n>
 
 " turn hybrid line numbers on
 :set number relativenumber
 :set nu rnu
+
+" Change word under cursor in file
+map <Leader>cw :%s/<C-r><C-w>/
 
 " Trigger `autoread` when files changes on disk
 " https://unix.stackexchange.com/questions/149209/refresh-changed-content-of-file-opened-in-vim/383044#383044
@@ -377,5 +497,10 @@ endtry
 " Tired of files splitting on the left pane.  That's where I work.
 set splitright
 
+" Tab completion for :e should be more bash-like
+set wildmode=longest,list,full
+set wildmenu
+
 colo onedark
 syntax on
+
