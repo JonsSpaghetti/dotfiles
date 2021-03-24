@@ -6,7 +6,7 @@ set -g default-terminal "xterm-256color"
 set -ga terminal-overrides ",*-256col*:Tc"
 
 # enable vi mode buffer navigation on leader + [
-set-window-option -g mode-keys vi
+# set-window-option -g mode-keys vi
 
 set -g mouse on
 
