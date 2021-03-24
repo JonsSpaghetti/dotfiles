@@ -46,7 +46,7 @@ Plug 'jiangmiao/auto-pairs'
 " folding
 Plug 'tmhedberg/SimpylFold'
 
-" autocomplete
+" lsp
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " fuzzy searching
@@ -82,7 +82,7 @@ Plug 'tpope/vim-dispatch'
 " Plug 'kristijanhusak/vim-dadbod-ui'
 
 " vim-motion 
-Plug 'easymotion/vim-easymotion'
+" Plug 'easymotion/vim-easymotion'
 
 " C#
 Plug 'OmniSharp/omnisharp-vim'
@@ -90,6 +90,10 @@ Plug 'OmniSharp/omnisharp-vim'
 " Typescript
 Plug 'leafgarland/typescript-vim'
 Plug 'peitalin/vim-jsx-typescript'
+
+" test runner
+Plug 'vim-test/vim-test'
+Plug 'jgdavey/tslime.vim'
 
 call plug#end()
 
@@ -378,6 +382,20 @@ autocmd FileType javascript setlocal ts=2 sts=2 sw=2
 autocmd FileType javascriptreact setlocal ts=2 sts=2 sw=2
 autocmd FileType typescript setlocal ts=2 sts=2 sw=2
 autocmd FileType typescriptreact setlocal ts=2 sts=2 sw=2
+
+" ============================================vim-test settings============================================
+nmap <silent> <Leader>tw :TestNearest<CR>
+nmap <silent> <Leader>tf :TestFile<CR>
+nmap <silent> <Leader>ts :TestSuite<CR>
+nmap <silent> <Leader>tl :TestLast<CR>
+nmap <silent> <Leader>gt :TestVisit<CR>
+
+let test#strategy = "tslime"
+let test#python#runner = 'djangotest'
+let g:test#python#djangotest#executable = 'docker-compose exec hippo django-admin test -k'
+
+" ============================================vim-test settings============================================
+nmap <Leader>tv <Plug>SetTmuxVars
 
 " ============================================OTHER SETTINGS============================================
 "Unmap ctrlf since we use ctrl d for pagedown anyway
