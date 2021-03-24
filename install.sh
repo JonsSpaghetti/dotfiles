@@ -33,11 +33,12 @@ fi
 
 echo "Creating symlinks..."
 function create_symlinks {
+	mkdir -p ~/.vim_runtime/vimrcs
 	ln -s $(pwd)/vim/vimrc ~/.vimrc
-	ln -s $(pwd)/vim/basic.vim ~/basic.vim
-	ln -s $(pwd)/vim/filetypes.vim ~/filetypes.vim
-	ln -s $(pwd)/vim/extended.vim ~/extended.vim
-	ln -s $(pwd)/vim/python.vim ~/python.vim
+	ln -s $(pwd)/vim/basic.vim ~/.vim_runtime/vimrcs/basic.vim
+	ln -s $(pwd)/vim/filetypes.vim ~/.vim_runtime/vimrcs/filetypes.vim
+	ln -s $(pwd)/vim/extended.vim ~/.vim_runtime/vimrcs/extended.vim
+	ln -s $(pwd)/vim/python.vim ~/.vim_runtime/vimrcs/python.vim
 	ln -s $(pwd)/zsh/zshrc ~/.zshrc
 	ln -s $(pwd)/tmux/conf ~/.tmux.conf
 	    # . ~/.vimrc
