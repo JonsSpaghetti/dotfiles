@@ -3,6 +3,9 @@
 ;; Place your private configuration here! Remember, you do not need to run 'doom
 ;; sync' after modifying this file!
 
+;; Ensure that if we conflict, use our keys instead of doom's keys
+(general-auto-unbind-keys)
+
 
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets.
@@ -33,13 +36,14 @@
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
-(setq display-line-numbers-type t)
+(setq display-line-numbers-type 'relative)
 
 
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
 ;; - `load!' for loading external *.el files relative to this one
-;; - `use-package!' for configuring packages `after!' for running code after a package has loaded
+;; - `use-package!' for configuring packages
+;; - `after!' for running code after a package has loaded
 ;; - `add-load-path!' for adding directories to the `load-path', relative to
 ;;   this file. Emacs searches the `load-path' when you load packages with
 ;;   `require' or `use-package'.
@@ -51,7 +55,30 @@
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
+(setq projectile-project-search-path '("~/Documents/code/"))
 (setq evil-snipe-override-evil-repeat-keys nil)
 (setq doom-localleader-key ",")
 (setq doom-localleader-alt-key "M-,")
-(setq display-line-numbers-type 'relative)
+;; Load private functions etc.
+(load! "./private.el")
+
+(with-eval-after-load 'evil
+    (defalias #'forward-evil-word #'forward-evil-symbol)
+    ;; make evil-search-word look for symbol rather than word boundaries
+    (setq-default evil-symbol-word-search t))
+
+;; Avoid performance issues in files with very long lines.
+(global-so-long-mode 1)
+
+;; Custom key mappings
+(map! :localleader
+      :desc "run python docker-compose test"
+      "t w" #'run-python-test)
+
+(map! :localleader
+      :desc "ivy proj search"
+      "f" #'+ivy/project-search)
+
+(map! :localleader
+      :desc "ivy search under cursor"
+      "f w" #'search-thing-at-point-in-project)
