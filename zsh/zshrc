@@ -52,6 +52,8 @@ bindkey "^P" fzf-file-widget
 alias plug='nvim --headless +PlugInstall +qa +UpdateRemotePlugins'
 alias vim="nvim"
 alias vi="nvim"
+alias go="cd ~/Documents/code/$(ls ~/Documents/code | fzf)"
+
 
 set -o vi
 
