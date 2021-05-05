@@ -398,6 +398,25 @@ let g:test#python#djangotest#executable = 'docker-compose exec hippo django-admi
 " ============================================vim-test settings============================================
 nmap <Leader>tv <Plug>SetTmuxVars
 
+" ============================================ROPEVIM Settings============================================
+" if has("python3")
+"   command! -buffer -nargs=+ PythonCmd python3 <args>
+" else
+"   finish
+" endif
+
+" function! LoadRope()
+"   PythonCmd << EOF
+" import ropevim
+" from rope_omni import RopeOmniCompleter
+" EOF
+" endfunction
+
+" call LoadRope()
+
+" :noremap <Leader>rvgd :call RopeGotoDefinition()
+" :noremap <Leader>rvm :call RopeMove()
+
 " ============================================OTHER SETTINGS============================================
 "Unmap ctrlf since we use ctrl d for pagedown anyway
 map <c-f> <Nop>
@@ -434,6 +453,9 @@ nnoremap <leader>rp :w !python<CR>
 
 "map terminal normal mode bck to esc
 :tnoremap jk <C-\><C-n>
+
+"yank current file + line # to clipboard register
+nnoremap <Leader>cln :let @+=expand("%") . ':' . line(".")<CR>
 
 " turn hybrid line numbers on
 :set number relativenumber
