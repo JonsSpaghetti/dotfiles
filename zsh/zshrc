@@ -49,11 +49,32 @@ export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
 '
 bindkey "^P" fzf-file-widget
 
+alias ddi='docker container rm $(docker container ls -aq) && docker rmi $(docker images -f "dangling=true" -q)'
+alias di='docker images'
+alias gs='git status'
+alias gc='git commit'
+unalias gb
+alias gb='fzf-git-branch'
+unalias gco
+alias gco='fzf-git-checkout'
+alias ga='git add'
+alias gr='git rebase'
+alias gst='git stash'
+alias gstp='git stash pop'
+alias grc='git rebase --continue'
+alias gca='git commit --amend'
+alias gri='git rebase -i HEAD~'
+
 alias plug='nvim --headless +PlugInstall +qa +UpdateRemotePlugins'
 alias vim="nvim"
-alias vi="nvim"
-alias go="cd ~/Documents/code/$(ls ~/Documents/code | fzf)"
-
+alias vi="vi"
+alias v="nvim"
+alias td="tmux detach"
+alias ta="tmux attach -d -t"
+alias tl="tmux ls"
+alias kc="kubectl"
+alias grep="rg"
+alias af="git diff --name-only | xargs autoflake --in-place --remove-all-unused-imports --remov-unused-variables"
 
 set -o vi
 
