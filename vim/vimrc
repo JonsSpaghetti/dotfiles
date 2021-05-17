@@ -142,6 +142,9 @@ set statusline+=\ %f
 set statusline+=%=
 set statusline+=\ %{LinterStatus()}
 
+nmap <silent> <leader>ap <Plug>(ale_previous_wrap)
+nmap <silent> <leader>an <Plug>(ale_next_wrap)
+
 " ============================================Coc settings============================================
 nnoremap <silent> ,k :call <SID>show_documentation()<CR>
 function! s:show_documentation()
@@ -482,6 +485,18 @@ map <C-j> <C-W>j
 map <C-k> <C-W>k
 map <C-h> <C-W>h
 map <C-l> <C-W>l
+
+map <leader>co :copen<CR>
+map <leader>cc :cc<CR>
+map <leader>ccl :cclose<CR>
+map <leader>cn :cn<CR>
+map <leader>ck :cexpr []<CR>
+
+map <leader>lo :lopen<CR>
+map <leader>lc :lc<CR>
+map <leader>lcl :lclose<CR>
+map <leader>ln :ln<CR>
+map <leader>lk :lexpr []<CR>
 
 " Specify the behavior when switching between buffers 
 try
