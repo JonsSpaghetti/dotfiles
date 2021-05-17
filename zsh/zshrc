@@ -64,6 +64,7 @@ alias gstp='git stash pop'
 alias grc='git rebase --continue'
 alias gca='git commit --amend'
 alias gri='git rebase -i HEAD~'
+alias gria='git rebase -i develop --autosquash'
 
 alias plug='nvim --headless +PlugInstall +qa +UpdateRemotePlugins'
 alias vim="nvim"
