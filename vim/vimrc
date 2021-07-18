@@ -95,6 +95,10 @@ Plug 'peitalin/vim-jsx-typescript'
 Plug 'vim-test/vim-test'
 Plug 'jgdavey/tslime.vim'
 
+"treesitter + text objects so that we can navigate code
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
+Plug 'nvim-treesitter/nvim-treesitter-textobjects'
+
 call plug#end()
 
 " ============================================Theme settings============================================
@@ -194,10 +198,10 @@ else
 endif
 
 " " Use <C-l> for trigger snippet expand.
-" imap <C-l> <Plug>(coc-snippets-expand)
+imap <C-l> <Plug>(coc-snippets-expand)
 
 " " Use <C-j> for select text for visual placeholder of snippet.
-" vmap <C-j> <Plug>(coc-snippets-select)
+vmap <C-j> <Plug>(coc-snippets-select)
 
 " " Use <C-j> for jump to next placeholder, it's default of coc.nvim
 " let g:coc_snippet_next = '<c-j>'
@@ -421,6 +425,38 @@ nmap <Leader>tv <Plug>SetTmuxVars
 
 " :noremap <Leader>rvgd :call RopeGotoDefinition()
 " :noremap <Leader>rvm :call RopeMove()
+
+" ============================================treesitter config============================================
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+    textobjects = {
+        select = {
+        enable = true,
+
+        -- Automatically jump forward to textobj, similar to targets.vim 
+        lookahead = true,
+
+        keymaps = {
+            -- You can use the capture groups defined in textobjects.scm
+            ["af"] = "@function.outer",
+            ["if"] = "@function.inner",
+            ["ac"] = "@class.outer",
+            ["ic"] = "@class.inner",
+            },
+        },
+    swap = {
+        enable = true,
+        swap_next = {
+            ["<leader>l"] = "@parameter.inner",
+            },
+        swap_previous = {
+            ["<leader>h"] = "@parameter.inner",
+            },
+        },
+    },
+}
+EOF
+
 
 " ============================================OTHER SETTINGS============================================
 "Unmap ctrlf since we use ctrl d for pagedown anyway
