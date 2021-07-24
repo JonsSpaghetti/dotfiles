@@ -1,0 +1,62 @@
+export CODE_DIR="${HOME}/Documents/code"
+
+export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+
+alias gohippo='cd ${CODE_DIR}/hippo && pyenv activate hippo-3.6.10'
+alias goaf='cd ${CODE_DIR}/airflow && pyenv activate airflow-3.7.7'
+alias gocode='cd ${CODE_DIR}'
+alias dcup="APPSemr,internal-tool docker-compose up -d"
+alias dcdown="docker-compose down"
+alias dshell="docker exec -it hippo_hippo_1 bash"
+alias aflocup="docker-compose -f docker-compose-LocalExecutor.yml up -d"
+alias aflocdown="docker-compose -f docker-compose-LocalExecutor.yml down"
+alias afloclogs="docker-compose -f docker-compose-LocalExecutor.yml logs -f"
+alias gotayra="cd ${CODE_DIR}/data-import-tayra && pyenv activate tayra"
+alias gollama="cd ${CODE_DIR}/lama && pyenv activate llama"
+alias gokub="cd ${CODE_DIR}/kubernetes-stuff/airflow-dev"
+alias tf="terraform"
+alias goafk='cd ${CODE_DIR}/helm-charts/stable/airflow'
+alias sshlogs='ssh jonathantan@logs.internal.elationemr.com'
+alias gojup='cd ${CODE_DIR}/jupyter && pyenv activate jupyter'
+alias gohh='cd ${CODE_DIR}/hammerhead'
+alias gotd='cd ${CODE_DIR}/thunderdome && pyenv activate thunderdome'
+alias gophi='cd ~/Documents/PHI'
+alias goinfra='cd ${CODE_DIR}/infrastructure && pyenv activate infrastructure'
+alias goimages='cd ${CODE_DIR}/data-import-images'
+alias golook='cd ${CODE_DIR}/hammerhead/looker_scripts && pyenv activate looker'
+alias gov3='cd ${CODE_DIR}/hackathon/apiv3/apiv3 && pyenv activate apiv3'
+alias gocst='cd ${CODE_DIR}/cst && pyenv activate cst'
+alias gobetle='cd ${CODE_DIR}/betle && pyenv activate betle'
+alias gofhir='cd ${CODE_DIR}/fhir-ng'
+alias gomirth='cd ${CODE_DIR}/mirth'
+alias gohl7='cd ${CODE_DIR}/hl7vpy && pyenv activate hl7vpy'
+alias gookta='cd ${CODE_DIR}/okta-sdk-python && pyenv activate okta'
+alias gowhale='cd ${CODE_DIR}/whale && pyenv activate whale'
+alias godags='cd ${CODE_DIR}/airflow-dags && pyenv activate airflow'
+
+alias ddi='docker container rm $(docker container ls -aq) && docker rmi $(docker images -f "dangling=true" -q)'
+alias di='docker images'
+alias gs='git status'
+alias gc='git commit'
+unalias gb
+alias gb='fzf-git-branch'
+unalias gco
+alias gco='fzf-git-checkout'
+alias ga='git add'
+alias gr='git rebase'
+alias gst='git stash'
+alias gstp='git stash pop'
+alias grc='git rebase --continue'
+alias gca='git commit --amend'
+alias gri='git rebase -i HEAD~'
+
+alias plug='nvim --headless +PlugInstall +qa +UpdateRemotePlugins'
+alias vim="nvim"
+alias vi="vi"
+alias v="nvim"
+alias td="tmux detach"
+alias ta="tmux attach -d -t"
+alias tl="tmux ls"
+alias kc="kubectl"
+alias grep="rg"
+alias af="git diff --name-only | xargs autoflake --in-place --remove-all-unused-imports --remove-unused-variables"

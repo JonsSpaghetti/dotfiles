@@ -40,6 +40,7 @@ function create_symlinks {
 	ln -s $(pwd)/vim/extended.vim ~/.vim_runtime/vimrcs/extended.vim
 	ln -s $(pwd)/vim/python.vim ~/.vim_runtime/vimrcs/python.vim
 	ln -s $(pwd)/zsh/zshrc ~/.zshrc
+	ln -s $(pwd)/zsh/zshrc-aliases ~/.zshrc.aliases
 	ln -s $(pwd)/tmux/conf ~/.tmux.conf
 	    # . ~/.vimrc
 	    . ~/.zshrc
