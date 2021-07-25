@@ -3,6 +3,7 @@
 function unlink_symlinks {
 	unlink ~/.vimrc
 	unlink ~/.zshrc
+	unlink ~/.zshrc.aliases
 	unlink ~/.tmux.conf
 }
 
@@ -10,6 +11,7 @@ if [ "$1" == "first" ]; then
     echo "This is the first run"
     if [[ "$OSTYPE" == "linux-gnu"*  ]]; then
 	sudo add-apt-repository ppa:neovim-ppa/unstable
+	sudo apt update
         sudo apt install -yqq zsh curl git tmux neovim bat nvm
         git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
         ~/.fzf/install
@@ -42,6 +44,10 @@ function create_symlinks {
 	ln -s $(pwd)/zsh/zshrc ~/.zshrc
 	ln -s $(pwd)/zsh/zshrc-aliases ~/.zshrc.aliases
 	ln -s $(pwd)/tmux/conf ~/.tmux.conf
+	ln -s ./doom/config.el ~/.doom.d/config.el
+	ln -s ./doom/init.el ~/.doom.d/init.el
+	ln -s ./doom/private.el ~/.doom.d/private.el
+	ln -s ./doom/packages.el ~/.doom.d/packages.el
 	    # . ~/.vimrc
 	    . ~/.zshrc
 	    # . ~/.tmux.conf
