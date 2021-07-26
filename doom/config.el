@@ -100,7 +100,7 @@
  :prefix ("r" . "rename")
  :desc "rename symbol" "n" #'lsp-rename)
 
-(autload 'enable-paredit-mode "paredit" "Turn on paredit" t)
+(autoload 'enable-paredit-mode "paredit" "Turn on paredit" t)
 (eval-after-load 'clojure-mode
   '((add-hook 'clojure-mode-hook #'enable-paredit-mode)
     (add-hook 'clojurescript-mode-hook #'enable-paredit)))
