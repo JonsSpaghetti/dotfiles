@@ -58,6 +58,15 @@
 (setq evil-snipe-override-evil-repeat-keys nil)
 (setq doom-localleader-key ",")
 (setq doom-localleader-alt-key "M-,")
+
+;; Load private functions etc.
+(load! "./private.el")
+
+(with-eval-after-load 'evil
+    (defalias #'forward-evil-word #'forward-evil-symbol)
+    ;; make evil-search-word look for symbol rather than word boundaries
+    (setq-default evil-symbol-word-search t))
+
 (setq display-line-numbers-type 'relative)
 (setq projectile-project-search-path '("~/code/" "~/Documents/code/"))
 (setq python-remove-cwd-from-path nil)
@@ -76,6 +85,11 @@
 (map! :localleader
       :desc "ivy search under cursor"
       "f w" #'search-thing-at-point-in-project)
+
+
+(map! :localleader
+      :desc "copy line location"
+      "c l n" #'copy-current-line-position-to-clipboard)
 
 ;; Map paredit for clojure mode
 (map!
@@ -104,3 +118,4 @@
 (eval-after-load 'clojure-mode
   '((add-hook 'clojure-mode-hook #'enable-paredit-mode)
     (add-hook 'clojurescript-mode-hook #'enable-paredit)))
+
