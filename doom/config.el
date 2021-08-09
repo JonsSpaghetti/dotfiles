@@ -59,6 +59,7 @@
 (setq evil-snipe-override-evil-repeat-keys nil)
 (setq doom-localleader-key ",")
 (setq doom-localleader-alt-key "M-,")
+
 ;; Load private functions etc.
 (load! "./private.el")
 
@@ -82,3 +83,7 @@
 (map! :localleader
       :desc "ivy search under cursor"
       "f w" #'search-thing-at-point-in-project)
+
+(map! :localleader
+      :desc "copy line location"
+      "c l n" #'copy-current-line-position-to-clipboard)
