@@ -6,7 +6,6 @@
 ;; Ensure that if we conflict, use our keys instead of doom's keys
 (general-auto-unbind-keys)
 
-
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets.
 (setq user-full-name "Jon Tan"
@@ -38,12 +37,13 @@
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type 'relative)
 
+;; Load private functions etc.
+(load! "./private.el")
 
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
 ;; - `load!' for loading external *.el files relative to this one
-;; - `use-package!' for configuring packages
-;; - `after!' for running code after a package has loaded
+;; - `use-package!' for configuring packages `after!' for running code after a package has loaded
 ;; - `add-load-path!' for adding directories to the `load-path', relative to
 ;;   this file. Emacs searches the `load-path' when you load packages with
 ;;   `require' or `use-package'.
@@ -55,7 +55,6 @@
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
-(setq projectile-project-search-path '("~/Documents/code/"))
 (setq evil-snipe-override-evil-repeat-keys nil)
 (setq doom-localleader-key ",")
 (setq doom-localleader-alt-key "M-,")
@@ -68,13 +67,16 @@
     ;; make evil-search-word look for symbol rather than word boundaries
     (setq-default evil-symbol-word-search t))
 
+(setq display-line-numbers-type 'relative)
+(setq projectile-project-search-path '("~/code/" "~/Documents/code/"))
+(setq python-remove-cwd-from-path nil)
+
 ;; Avoid performance issues in files with very long lines.
 (global-so-long-mode 1)
 
-;; Custom key mappings
-(map! :localleader
-      :desc "run python docker-compose test"
-      "t w" #'run-python-test)
+(define-key evil-normal-state-map (kbd "s") 'evil-substitute)
+(after! evil-snipe
+    (evil-snipe-mode -1))
 
 (map! :localleader
       :desc "ivy proj search"
@@ -84,6 +86,36 @@
       :desc "ivy search under cursor"
       "f w" #'search-thing-at-point-in-project)
 
+
 (map! :localleader
       :desc "copy line location"
       "c l n" #'copy-current-line-position-to-clipboard)
+
+;; Map paredit for clojure mode
+(map!
+ :localleader
+ :prefix ("p" . "paredit")
+ :map (clojure-mode-map)
+  :desc "paredit slurp forward" "s l" #'paredit-forward-slurp-sexp
+  :desc "paredit slurp backward" "s h" #'paredit-backward-slurp-sexp
+  :desc "paredit barf forward" "b l" #'paredit-forward-barf-sexp
+  :desc "paredit barf backward" "b h" #'paredit-backward-barf-sexp)
+
+(map!
+ :localleader
+ :prefix ("s" . "surround")
+ :map (clojure-mode-map)
+  :desc "paredit wrap round" "(" #'paredit-wrap-round
+  :desc "paredit wrap square" "[" #'paredit-wrap-square
+  :desc "paredit wrap curly" "{" #'paredit-wrap-curly)
+
+(map!
+ :leader
+ :prefix ("r" . "rename")
+ :desc "rename symbol" "n" #'lsp-rename)
+
+(autoload 'enable-paredit-mode "paredit" "Turn on paredit" t)
+(eval-after-load 'clojure-mode
+  '((add-hook 'clojure-mode-hook #'enable-paredit-mode)
+    (add-hook 'clojurescript-mode-hook #'enable-paredit)))
+

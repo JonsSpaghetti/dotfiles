@@ -28,6 +28,12 @@
   (+ivy/project-search nil (thing-at-point 'symbol 'no-properties))
 )
 
+(defun wsl-copy (start end)
+  "WSL copy to clipboard from terminal"
+  (interactive "r")
+    (shell-command-on-region start end "clip.exe")
+      (deactivate-mark))
+
 (defun run-python-test()
   "Run docker-compose python test using django-admin based on file name."
   (interactive)
