@@ -48,6 +48,7 @@ function create_symlinks {
 	ln -s ./doom/init.el ~/.doom.d/init.el
 	ln -s ./doom/private.el ~/.doom.d/private.el
 	ln -s ./doom/packages.el ~/.doom.d/packages.el
+	ln -s ./doom/custom.el ~/.doom.d/custom.el
 	    # . ~/.vimrc
 	    . ~/.zshrc
 	    # . ~/.tmux.conf
