@@ -39,6 +39,10 @@ bind -n M-j select-pane -D
 bind -n M-k select-pane -U
 bind -n M-l select-pane -R
 
+# Use vim scrolling for copy mode
+bind -T copy-mode C-u send -X page-up
+bind -T copy-mode C-d send -X page-down
+
 # tmux copy/paste is now like vim
  bind-key -T copy-mode-vi v send-keys -X begin-selection
   bind-key -T copy-mode-vi y send-keys -X copy-selection
@@ -46,7 +50,3 @@ bind -n M-l select-pane -R
 
 # For vi copy mode bindings
 bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel "xclip -selection clipboard -i"
-# For emacs copy mode bindings
-bind-key -T copy-mode MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel "xclip -selection clipboard -i"
-bind -T copy-mode-vi y send -X copy-pipe "xclip -selection c"
-

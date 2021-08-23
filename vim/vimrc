@@ -66,7 +66,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'vim-airline/vim-airline'
 
 "wiki/notetaking
-Plug 'vimwiki/vimwiki'
+" Plug 'vimwiki/vimwiki'
 
 " vim surround
 Plug 'tpope/vim-surround'

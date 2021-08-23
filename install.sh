@@ -20,7 +20,7 @@ if [ "$1" == "first" ]; then
         sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
          git clone https://github.com/pyenv/pyenv.git ~/.pyenv
     elif [[ "$OSTYPE" == "darwin19.0"  ]]; then
-        brew install -yqq fzf tmux zsh curl git neovim bat nvm
+        brew install fzf tmux zsh curl git neovim bat nvm rg
         # To install useful key bindings and fuzzy completion:
         $(brew --prefix)/opt/fzf/install
         sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
@@ -51,7 +51,7 @@ function create_symlinks {
 	ln -s ./doom/custom.el ~/.doom.d/custom.el
 	    # . ~/.vimrc
 	    . ~/.zshrc
-	    # . ~/.tmux.conf
+	    tmux source-file ~/.tmux.conf
 }
 
 create_symlinks

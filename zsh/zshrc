@@ -26,7 +26,10 @@ source $ZSH/oh-my-zsh.sh
 #     PS1="$PROMPT\$ "
 # }
 # export -f updatePrompt
-#
+
+export SPACESHIP_VI_MODE_SHOW=false
+export ZSH_THEME="spaceship"
+
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
 
 # # Bash shell executes this function just before displaying the PS1 variable
@@ -124,3 +127,5 @@ fzf-git-checkout() {
 }
 
 set -o vi
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
