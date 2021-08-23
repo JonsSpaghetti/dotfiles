@@ -1,34 +1,8 @@
-export ZSH=$HOME/.oh-my-zsh
-source $ZSH/oh-my-zsh.sh
-
-
-# function updatePrompt {
-
-#     # Styles
-#     GREEN='\[\e[0;32m\]'
-#     BLUE='\[\e[0;34m\]'
-#     RESET='\[\e[0m\]'
-
-#     # Base prompt: \W = working dir
-#     PROMPT="\W"
-
-#     # Current Git repo
-#     if type "__git_ps1" > /dev/null 2>&1; then
-#         PROMPT="$PROMPT$(__git_ps1 "${GREEN}(%s)${RESET}")"
-#     fi
-
-#     # Current virtualenv
-#     if [[ $VIRTUAL_ENV != "" ]]; then
-#         # Strip out the path and just leave the env name
-#         PROMPT="$PROMPT${BLUE}{${VIRTUAL_ENV##*/}}${RESET}"
-#     fi
-
-#     PS1="$PROMPT\$ "
-# }
-# export -f updatePrompt
-
 export SPACESHIP_VI_MODE_SHOW=false
 export ZSH_THEME="spaceship"
+
+export ZSH=$HOME/.oh-my-zsh
+source $ZSH/oh-my-zsh.sh
 
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
 
