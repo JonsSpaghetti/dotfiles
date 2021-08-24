@@ -56,8 +56,8 @@ alias af="git diff --name-only | xargs autoflake --in-place --remove-all-unused-
 
 set -o vi
 
-export NVM_DIR="/home/jtan/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
 
 export PATH="$PYENV_ROOT/bin:$PATH"
 export PYENV_ROOT="$HOME/.pyenv"
@@ -97,6 +97,19 @@ fzf-git-checkout() {
         git checkout --track $branch
     else
         git checkout $branch;
+    fi
+}
+
+export CODE_DIR="$HOME/Documents/code"
+function cd {
+    builtin cd "$@"
+    if [ -f ".aliases" ]; then
+        source .aliases && echo "Active .aliases"
+    fi
+    if [ -f "$CODE_DIR/venvs/${PWD##*/}/bin/activate" ]; then
+        source "$CODE_DIR/venvs/${PWD##*/}/bin/activate"
+    else
+        deactivate
     fi
 }
 

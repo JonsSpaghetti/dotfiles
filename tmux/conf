@@ -1,3 +1,5 @@
+set-window-option -g mode-keys vi
+
 # Avoid breaking vim
 set -sg escape-time 0
 
