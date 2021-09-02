@@ -15,7 +15,6 @@ test -f ~/.zshrc.aliases && source ~/.zshrc.aliases
 # Any other local zshrc config
 test -f ~/.zshrc.loc && source ~/.zshrc.loc
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 # For bat highlighting in fzf preview window:
 export BAT_THEME="TwoDark"
 # export BAT_STYLE=""
@@ -109,10 +108,15 @@ function cd {
     if [ -f "$CODE_DIR/venvs/${PWD##*/}/bin/activate" ]; then
         source "$CODE_DIR/venvs/${PWD##*/}/bin/activate"
     else
-        deactivate
+        if [[ "$VIRTUAL_ENV" != "" ]]; then
+            deactivate
+        fi
     fi
 }
 
 set -o vi
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
+export LESS="-SRXF"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
