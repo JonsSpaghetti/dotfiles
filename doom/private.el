@@ -63,4 +63,24 @@
            (concat (dired-replace-in-string (getenv "HOME") "~" (buffer-file-name)) ":" (number-to-string (line-number-at-pos)))))
       (kill-new path-with-line-number)
       (message (concat path-with-line-number " copied to clipboard"))))
+
+(defun lines-to-csv (separator)
+  "Converts the current region lines to a single line, CSV value, separated by the provided separator string."
+  (interactive "sEnter separator character: ")
+  (setq current-region-string (buffer-substring-no-properties (region-beginning) (region-end)))
+  (insert
+   (mapconcat 'identity
+              (split-string current-region-string "\n")
+              separator)))
+
+(defun csv-to-lines (separator)
+  "Converts the current region line, as a csv string, to a set of independent lines, splitting the string based on the provided separator."
+  (interactive "sEnter separator character: ")
+  (setq current-region-string (buffer-substring-no-properties (region-beginning) (region-end)))
+  (insert
+   (mapconcat 'identity
+              (split-string current-region-string separator)
+              "\n")))
+
 ;;; private.el ends here
+
