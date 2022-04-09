@@ -25,35 +25,35 @@
 (defun search-thing-at-point-in-project ()
   "Search for specific symbol under pointer in project using ivy."
   (interactive)
-  (+ivy/project-search nil (thing-at-point 'symbol 'no-properties))
-)
+  (+ivy/project-search nil (thing-at-point 'symbol 'no-properties)))
+
 
 (defun wsl-copy (start end)
   "WSL copy to clipboard from terminal"
   (interactive "r")
-    (shell-command-on-region start end "clip.exe")
-      (deactivate-mark))
+  (shell-command-on-region start end "clip.exe")
+  (deactivate-mark))
 
 (defun run-python-test()
   "Run docker-compose python test using django-admin based on file name."
   (interactive)
-       (async-shell-command
-        (concat "docker-compose exec -T hippo django-admin test -k "
-                (concat
-                 (mapconcat 'identity
-                            (butlast
-                             (split-string
-                              (s-replace "/" "."
-                                         (python-pytest--relative-file-name buffer-file-name)
-                                         ) "\\.")
-                             ) ".")
-                 (concat "."
-                         (python-pytest--current-defun)
-                         )
-                 )
-                )
-        )
-       )
+  (async-shell-command
+   (concat "docker-compose exec -T hippo django-admin test -k "
+           (concat
+            (mapconcat 'identity
+                       (butlast
+                        (split-string
+                         (s-replace "/" "."
+                                    (python-pytest--relative-file-name buffer-file-name))
+                         "\\."))
+                       ".")
+            (concat "."
+                    (python-pytest--current-defun))))))
+                         
+                 
+                
+        
+       
 
 
 (defun copy-current-line-position-to-clipboard ()
