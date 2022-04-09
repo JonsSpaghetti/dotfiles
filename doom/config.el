@@ -32,6 +32,12 @@
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/org/")
+(setq org-capture-templates
+   `(("t" "Todo" entry (file+headline ,(concat org-directory "SOLV/todo.org")
+                                     "Inbox")
+      "* TODO %?\n  %i\n  %a")
+     ("j" "Journal" entry (file+datetree ,(concat org-directory "SOLV/journal.org"))
+      "* %?\nEntered on %U\n  %i\n  %a")))
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
@@ -118,4 +124,3 @@
 (eval-after-load 'clojure-mode
   '((add-hook 'clojure-mode-hook #'enable-paredit-mode)
     (add-hook 'clojurescript-mode-hook #'enable-paredit)))
-
