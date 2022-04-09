@@ -52,3 +52,6 @@ bind -T copy-mode C-d send -X page-down
 
 # For vi copy mode bindings
 bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel "xclip -selection clipboard -i"
+
+# This is the most annoying thing in the entire world.
+unbind Space

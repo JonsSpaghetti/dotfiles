@@ -212,6 +212,9 @@ vmap <C-j> <Plug>(coc-snippets-select)
 " " Use <C-j> for both expand and jump (make expand higher priority.)
 " imap <C-j> <Plug>(coc-snippets-expand-jump)
 
+" Scroll pop up up and down
+nnoremap <nowait><expr> <C-j> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-j>"
+nnoremap <nowait><expr> <C-k> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-k>"
 "" ============================================Omnisharp config===========================================
 let g:OmniSharp_selector_ui = 'fzf'    " Use fzf
 let g:OmniSharp_selector_findusages = 'fzf'
@@ -325,7 +328,7 @@ augroup END
 
 " Set up bat for preview window syntax highlighting etc
 let $BAT_THEME = 'base16'
-nmap <C-p> :FzfPreviewProjectFiles<CR> 
+nmap <Space><Space> :FzfPreviewProjectFiles<CR> 
 nnoremap <silent> <Leader>f :FzfPreviewProjectGrep<Space>
 nnoremap <silent> <Leader>fw :FzfPreviewProjectGrep<Space><C-r><C-w><CR> 
 nnoremap <silent> <Leader>fal :FzfPreviewMruFiles<CR>
@@ -401,7 +404,9 @@ nmap <silent> <Leader>tl :TestLast<CR>
 nmap <silent> <Leader>gt :TestVisit<CR>
 
 let test#strategy = "tslime"
-let test#python#runner = 'djangotest'
+" let test#python#runner = 'djangotest'
+let test#python#runner = 'pytest'
+let test#python#pytest#options = {'all': '-v', 'nearest': '-vv'}
 let g:test#python#djangotest#executable = 'docker-compose exec hippo django-admin test -k'
 
 " ============================================vim-test settings============================================

@@ -2,6 +2,8 @@ export CODE_DIR="${HOME}/Documents/code"
 
 export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
 
+
+alias drc='docker compose -f /Users/jonathan/Documents/code/docker-compose-drc.yaml "$@"'
 alias gohippo='cd ${CODE_DIR}/hippo && pyenv activate hippo-3.6.10'
 alias goaf='cd ${CODE_DIR}/airflow && pyenv activate airflow-3.7.7'
 alias gocode='cd ${CODE_DIR}'
@@ -60,3 +62,47 @@ alias tl="tmux ls"
 alias kc="kubectl"
 alias grep="rg"
 alias af="git diff --name-only | xargs autoflake --in-place --remove-all-unused-imports --remove-unused-variables"
+
+# SOLV REPO
+export SOLV_REPOS='/Users/jonathan/Documents/code'
+
+# MISC
+alias listen='sudo lsof -PiTCP -sTCP:LISTEN'
+
+# VENV
+alias venv="source venv/bin/activate"
+# DAPI confs
+alias confd="venv && source conf/dev.env"
+alias confl="venv && source conf/livestage.env"
+alias confp="venv && source conf/secure-prod.env"
+alias conf="confd"
+# Gunicorn
+alias dapip="gunicorn -w 10 startup:__hug_wsgi__"
+# Hug
+alias dapi="hug -f startup.py"
+
+# GIT ALIASES
+alias when="git for-each-ref --sort=-committerdate refs/heads/ --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(contents:subject) - %(authorname) (%(color:green)%(committerdate:relative)%(color:reset))'"
+
+# DB
+alias devdb="`unset DATABASE_URL ; cat $SOLV_REPOS/dapi/conf/test.env| grep -i postgres`"
+alias livestagedb="unset DATABASE_URL ; export DATABASE_URL=postgres://u433tuigbbng71:p9c59dfa75d2ea1ee7b7cd9dc816b59b15dd638fd409167eab9847d18d485328c@ec2-34-230-234-203.compute-1.amazonaws.com:5432/d34emf3g9p2uap"
+alias uclproddb="unset DATABASE_URL ; export DATABASE_URL=postgres://u7c40p0ckadjg2:p8d3478738de3039559c355c1d6f05121118088ba056c9634ffb8434a2728467c@ec2-3-225-227-85.compute-1.amazonaws.com:5432/d6tbvja8dg794"
+alias analdb="`unset DATABASE_URL; cat $SOLV_REPOS/dapi-tasks/conf/prod.env | grep -i anal`"
+
+#REDIS QUEUE
+alias check_redis_on_demand="rq -u redis://redistogo:35f21dfeab46720443877ed8416723f0@barreleye.redistogo.com:11983/ info"
+alias check_redis_scheduled="rq -u redis://redistogo:3fd0d327550ac1ef82da92b83216cfc9@grouper.redistogo.com:11648/ info"
+
+# Docker build aliases
+alias build-dapi="docker-compose build --force-rm --no-cache --build-arg SSH_KEY=\"$(cat ~/.ssh/id_ed25519)\" dapi"
+alias build-dapi-tasks="docker-compose build --force-rm --no-cache --build-arg SSH_KEY=\"$(cat ~/.ssh/id_ed25519)\" dapi_tasks_on_demand"
+
+# NVM
+export NVM_DIR=~/.nvm
+source $(brew --prefix nvm)/nvm.sh
+
+# python
+export PATH="/usr/local/opt/python/libexec/bin:$PATH" # alias python and pip to python3 and pip3
+export PKG_CONFIG_PATH="/usr/local/opt/libffi/lib/pkgconfig"
+export DYLD_LIBRARY_PATH=/usr/local/opt/openssl/lib:$DYLD_LIBRARY_PATH

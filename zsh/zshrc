@@ -60,11 +60,10 @@ export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || pr
 
 export PATH="$PYENV_ROOT/bin:$PATH"
 export PYENV_ROOT="$HOME/.pyenv"
+export PATH="/Users/jonathan/Library/Python/3.7/bin:$PATH"
 if command -v pyenv 1>/dev/null 2>&1; then
 	eval "$(pyenv init -)"
 fi
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
 
 export EDITOR="nvim"
 
@@ -102,9 +101,9 @@ fzf-git-checkout() {
 export CODE_DIR="$HOME/Documents/code"
 function cd {
     builtin cd "$@"
-    if [ -f ".aliases" ]; then
-        source .aliases && echo "Active .aliases"
-    fi
+    # if [ -f ".aliases" ]; then
+    #     source .aliases && echo "Active .aliases"
+    # fi
     if [ -f "$CODE_DIR/venvs/${PWD##*/}/bin/activate" ]; then
         source "$CODE_DIR/venvs/${PWD##*/}/bin/activate"
     else
@@ -119,4 +118,5 @@ export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
 export LESS="-SRXF"
 
+source /usr/local/bin/solv
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
