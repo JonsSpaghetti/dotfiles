@@ -65,8 +65,9 @@
 (setq doom-localleader-key ",")
 (setq doom-localleader-alt-key "M-,")
 
-;; Load private functions etc.
-(load! "./private.el")
+;; Allow python mode to automatically activate venvs
+;; (add-hook 'python-mode '(pyvenv-activate (concat projectile-project-root ".venv")))
+(add-hook 'python-mode '(pyvenv-workon projectile-project-name))
 
 (with-eval-after-load 'evil
     (defalias #'forward-evil-word #'forward-evil-symbol)
@@ -85,13 +86,20 @@
     (evil-snipe-mode -1))
 
 (map! :localleader
-      :desc "ivy proj search"
-      "f" #'+ivy/project-search)
-
-(map! :localleader
-      :desc "ivy search under cursor"
+      :desc "under cursor"
       "f w" #'search-thing-at-point-in-project)
 
+(map! :leader
+      :desc "under cursor"
+      "f w" #'search-thing-at-point-in-project)
+
+(map! :localleader
+      :desc "find in project"
+      "f \"" #'+ivy/project-search)
+
+(map! :leader
+      :desc "find in project"
+      "f \"" #'+ivy/project-search)
 
 (map! :localleader
       :desc "copy line location"
@@ -124,3 +132,8 @@
 (eval-after-load 'clojure-mode
   '((add-hook 'clojure-mode-hook #'enable-paredit-mode)
     (add-hook 'clojurescript-mode-hook #'enable-paredit)))
+
+(map!
+ :leader
+ :prefix ("1")
+ :desc "Show file name" "g" #'(lambda () (interactive) (message buffer-file-name)))

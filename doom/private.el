@@ -27,7 +27,6 @@
   (interactive)
   (+ivy/project-search nil (thing-at-point 'symbol 'no-properties)))
 
-
 (defun wsl-copy (start end)
   "WSL copy to clipboard from terminal"
   (interactive "r")
@@ -51,11 +50,6 @@
                     (python-pytest--current-defun))))))
                          
                  
-                
-        
-       
-
-
 (defun copy-current-line-position-to-clipboard ()
     "Copy current line in file to clipboard as '</path/to/file>:<line-number>'."
     (interactive)
@@ -64,16 +58,16 @@
       (kill-new path-with-line-number)
       (message (concat path-with-line-number " copied to clipboard"))))
 
-(defun lines-to-csv (separator)
+(defun arrayify (separator surround)
   "Converts the current region lines to a single line, CSV value, separated by the provided separator string."
-  (interactive "sEnter separator character: ")
+  (interactive "sEnter separator character: \nsEnter surround character: ")
   (setq current-region-string (buffer-substring-no-properties (region-beginning) (region-end)))
   (insert
-   (mapconcat 'identity
-              (split-string current-region-string "\n")
-              separator)))
+   (mapconcat (lambda (str) (if (> (length str) 0) (concat surround str surround)))
+        (split-string current-region-string "\n")
+        separator)))
 
-(defun csv-to-lines (separator)
+(defun unarrayify (separator)
   "Converts the current region line, as a csv string, to a set of independent lines, splitting the string based on the provided separator."
   (interactive "sEnter separator character: ")
   (setq current-region-string (buffer-substring-no-properties (region-beginning) (region-end)))
@@ -82,5 +76,11 @@
               (split-string current-region-string separator)
               "\n")))
 
-;;; private.el ends here
+;; TODO finish this up
+(defun python-import-path ()
+  "Get import path of thing at point"
+  (interactive)
+  (insert (concat (substring (string-replace "/" "." buffer-file-name) 0 -3) (thing-at-point 'symbol 'properties))))
 
+
+;;; private.el ends here
