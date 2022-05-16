@@ -64,6 +64,9 @@ export PATH="/Users/jonathan/Library/Python/3.7/bin:$PATH"
 if command -v pyenv 1>/dev/null 2>&1; then
 	eval "$(pyenv init -)"
 fi
+export PATH=$PATH:/usr/local/go/bin
+export PATH=$PATH:/usr/bin/elixir
+export PATH=$PATH:/usr/bin/mix
 
 export EDITOR="nvim"
 

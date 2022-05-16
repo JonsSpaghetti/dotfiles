@@ -99,6 +99,10 @@ Plug 'jgdavey/tslime.vim'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
 Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 
+"Elixir
+"Apparently this is needed in order for elixirls to work properly
+Plug 'elixir-editors/vim-elixir'
+
 call plug#end()
 
 " ============================================Theme settings============================================
