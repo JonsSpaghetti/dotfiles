@@ -25,7 +25,8 @@
 (defun search-thing-at-point-in-project ()
   "Search for specific symbol under pointer in project using ivy."
   (interactive)
-  (+ivy/project-search nil (thing-at-point 'symbol 'no-properties)))
+  (+vertico/project-search nil (thing-at-point 'symbol 'no-properties)))
+
 
 (defun wsl-copy (start end)
   "WSL copy to clipboard from terminal"
@@ -54,7 +55,7 @@
     "Copy current line in file to clipboard as '</path/to/file>:<line-number>'."
     (interactive)
     (let ((path-with-line-number
-           (concat (dired-replace-in-string (getenv "HOME") "~" (buffer-file-name)) ":" (number-to-string (line-number-at-pos)))))
+           (concat (dired-replace-in-string (expand-file-name "Documents/code/" (getenv "HOME")) "" (buffer-file-name)) ":" (number-to-string (line-number-at-pos)))))
       (kill-new path-with-line-number)
       (message (concat path-with-line-number " copied to clipboard"))))
 

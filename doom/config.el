@@ -95,11 +95,11 @@
 
 (map! :localleader
       :desc "find in project"
-      "f \"" #'+ivy/project-search)
+      "f \"" #'+vertico/project-search)
 
 (map! :leader
       :desc "find in project"
-      "f \"" #'+ivy/project-search)
+      "f \"" #'+vertico/project-search)
 
 (map! :localleader
       :desc "copy line location"
@@ -137,3 +137,14 @@
  :leader
  :prefix ("1")
  :desc "Show file name" "g" #'(lambda () (interactive) (message buffer-file-name)))
+
+(set-face-attribute 'variable-pitch nil :family "DejaVu Serif")
+(set-face-attribute 'variable-pitch nil :slant 'italic)
+(set-face-attribute 'variable-pitch nil :height 120)
+
+
+(set-face-attribute 'org-table nil :inherit 'fixed-pitch)
+(setq orderless-matching-styles '(orderless-regexp orderless-flex))
+
+(provide 'config)
+;;; config.el ends here
