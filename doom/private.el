@@ -83,5 +83,36 @@
   (interactive)
   (insert (concat (substring (string-replace "/" "." buffer-file-name) 0 -3) (thing-at-point 'symbol 'properties))))
 
+(defun today ()
+  "Insert string for today's date formatted how you like it"
+  (interactive)
+  (insert (format-time-string "%F")))
+
+(defun now ()
+  "Insert string for today's datetime formatted how you like it"
+  (interactive)
+  (insert (format-time-string "%FT%H:%M:%S %Z")))
+
+(defun black-on-current-file ()
+  "Run black on current file"
+  (interactive)
+  (save-buffer)
+  (setenv "PATH" (concat (getenv "PATH") ":" "/Users/jonathan/Documents/code/venvs/dapi/bin/black"))
+  ;; (shell-command (concat "echo $PATH"))
+  (shell-command (concat "/Users/jonathan/Documents/code/venvs/dapi/bin/black" " " buffer-file-name))
+  (revert-buffer-quick))
+
+(defun source-conf-test ()
+  "Source conf/test.env"
+  (interactive)
+  (save-buffer)
+  (shell-command (concat "source" " " (projectile-project-root) "/conf/test.env")))
+
+(defun copy-file-name-to-clipboard ()
+  "Copy file name to clipboard"
+  (interactive)
+  (kill-new (file-relative-name buffer-file-name (projectile-project-root))))
+                                                    
+
 
 ;;; private.el ends here
