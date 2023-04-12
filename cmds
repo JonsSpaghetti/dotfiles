@@ -1,0 +1,89 @@
+function dps (){
+	docker-compose ps
+}
+
+function dex (){
+	docker-compose exec "$@"
+}
+
+function dre() {
+	BASIC_AUTH_USERNAME="" BASIC_AUTH_PASSWORD="" docker-compose restart "$@"
+}
+
+function dup() {
+	VERSION=dev BASIC_AUTH_USERNAME="" BASIC_AUTH_PASSWORD="" docker-compose up -d "$@"
+}
+
+function dk() {
+	docker-compose kill "$@"
+}
+
+function dd() {
+	docker-compose down
+}
+
+function dlogs(){
+	docker-compose logs -f 1000 "$@"
+}
+
+function podnm() {
+	kubectl get pods | sed 's/ .*//' | fzf
+}
+
+function depnm() {
+	kubectl get deployment | sed 's/ .*//' | fzf
+}
+
+function plogs() {
+	podnm | xargs -t -I {} kubectl logs {} -f
+}
+
+function plogst() {
+	podnm | xargs -t -I {} kubectl logs {} -f --tail=100
+}
+function pod() {
+	podnm | xargs -t kubectl get pod
+}
+
+function pods() {
+	kubectl get pods --watch
+}
+
+function dpod() {
+	podnm | xargs -t kubectl delete pod
+}
+
+function kpod() {
+	podnm | xargs -t kubectl delete pod
+}
+
+function klogs() {
+	podnm | xargs -t -I {} kubectl logs {} -f
+}
+
+function descpod() {
+	podnm | xargs -t -I {} kubectl describe pod {}
+}
+
+function kex() {
+	podnm | xargs -t -I {} kubectl exec -it {} -- "$@"
+}
+
+function kyaml() {
+	depnm | xargs -t -I {} kubectl get deploy "$@" -o yaml
+}
+
+function projnm() {
+        gcloud projects list | awk '{print $1}' | grep 'ab-cloud-proj' | fzf
+}
+
+function projprefix() {
+        echo $1 | awk -F '-ab-cloud-proj' '{print $1}'
+}
+
+function gosql() {
+        local PROJECT=$(projnm)
+        local PREFIX=$(projprefix $PROJECT)
+	local DBIP=$(gcloud sql instances list --project $PROJECT | grep 'pgsql-instance' | awk '{print $6}')
+	pgcli -h $DBIP -u "$PREFIX-pgsql-admin-readonly" -d "$PREFIX-configapi" 
+}
