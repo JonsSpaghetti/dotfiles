@@ -85,5 +85,7 @@ function gosql() {
         local PROJECT=$(projnm)
         local PREFIX=$(projprefix $PROJECT)
 	local DBIP=$(gcloud sql instances list --project $PROJECT | grep 'pgsql-instance' | awk '{print $6}')
-	pgcli -h $DBIP -u "$PREFIX-pgsql-admin-readonly" -d "$PREFIX-configapi" 
+	local CMD=(pgcli -h $DBIP -u "$PREFIX-pgsql-admin-readonly" -d "$PREFIX-configapi")
+	echo $CMD
+	"${CMD[@]}"
 }
