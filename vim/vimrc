@@ -2,9 +2,9 @@ set nocompatible              " be iMproved, required
 filetype off                  " required
 
 let mapleader = ","
-source ~/.vim_runtime/vimrcs/basic.vim
-source ~/.vim_runtime/vimrcs/filetypes.vim
-source ~/.vim_runtime/vimrcs/extended.vim
+" source ~/.vim_runtime/vimrcs/basic.vim
+" source ~/.vim_runtime/vimrcs/filetypes.vim
+" source ~/.vim_runtime/vimrcs/extended.vim
 
 
 
@@ -169,6 +169,10 @@ nmap <silent> gr <Plug>(coc-references)
 xmap <leader>a  <Plug>(coc-codeaction-selected)
 nmap <leader>a  <Plug>(coc-codeaction-selected)
 
+" Intellij Verisions
+map <silent> rn <Action>(RenameElement)
+map <silent> gd <Action>(GoToImplementation)
+map <silent> gr <Action>(FindUsages)
 
 nnoremap <A-j> :m .+1<CR>==
 nnoremap <A-k> :m .-2<CR>==
@@ -466,7 +470,6 @@ require'nvim-treesitter.configs'.setup {
 }
 EOF
 
-
 " ============================================OTHER SETTINGS============================================
 "Unmap ctrlf since we use ctrl d for pagedown anyway
 map <c-f> <Nop>
@@ -486,10 +489,6 @@ noremap <Leader>0 :tablast<cr>
 nnoremap H gT
 nnoremap L gt
 
-" Remap scroll keys
-nnoremap J <c-d>
-nnoremap K <c-u>
-
 "Unmap esc so we use capslock (ctrl) + [
 inoremap jk <esc>
 
@@ -502,7 +501,7 @@ xnoremap <leader>rvp :w !python<CR>
 nnoremap <leader>rp :w !python<CR>
 
 "map terminal normal mode bck to esc
-:tnoremap jk <C-\><C-n>
+"tnoremap jk <C-\><C-n>
 
 "yank current file + line # to clipboard register
 nnoremap <Leader>cln :let @+=expand("%") . ':' . line(".")<CR>
@@ -614,3 +613,23 @@ set wildmenu
 colo onedark
 syntax on
 
+" ============================================INTELLIJ SETTINGS============================================
+" These go at the very bottom because I don't want other shit overriding
+" them
+map gd <Action>(GotoDeclaration)
+map <space><Space> <Action>(SearchEverywhere)
+map <C-o> <Action>(Back)
+map <space>fw <Action>(EditorSelectWord)<Action>(FindInPath)
+map <space>f" <Action>(FindInPath)
+map ,cln <Action>(CopyPathWithLineNumber)
+map rn <Action>(RenameElement)
+map <space>bd <Action>(CloseContent)
+map <space>pp <Action>(OpenProjectWindows)
+map <space>1g <Action>(SelectInProjectView)
+map <space>ck <Action>(QuickJavaDoc)
+map <space>wp <Action>(ActivateProjectToolWindow)
+map <space>haw <Action>(HideActiveWindow)
+map <space>wv <Action>(SplitVertically)
+map <space>wh <c-h>
+map <space>wl <c-l>
+map <space>pc <Action>(MakeModule)

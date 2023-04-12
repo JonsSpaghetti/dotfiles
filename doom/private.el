@@ -86,7 +86,7 @@
 (defun today ()
   "Insert string for today's date formatted how you like it"
   (interactive)
-  (insert (format-time-string "%F")))
+  (insert (format-time-string " %F")))
 
 (defun now ()
   "Insert string for today's datetime formatted how you like it"
@@ -113,6 +113,9 @@
   (interactive)
   (kill-new (file-relative-name buffer-file-name (projectile-project-root))))
                                                     
-
+(defun jon-scratch-cmd ()
+  "Do whatever I want"
+  (interactive)
+  (projectile-root-top-down buffer-file-name))
 
 ;;; private.el ends here

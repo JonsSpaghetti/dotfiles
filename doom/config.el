@@ -27,16 +27,37 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
+(doom-themes-treemacs-config)
+(global-tree-sitter-mode)
+(add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
 (setq doom-theme 'doom-one)
+
+;; This will probably need to change every single time I get a new pc. Needed to compile parinfer-rust and put the build file somewhere
+(setq parinfer-rust-library "~/.emacs.d/parinfer-rust/libparinfer_rust.dylib")
+
+;; SO that subprojects don't get their own projects automagically
+(defun custom-projectile-project-root-function
+  (dir)
+  "So that we don't accidentally create projects from git submodules"
+  (let ((default-directory dir))
+    (vc-root-dir)))
+
+;; (setq projectile-project-root-functions '(custom-projectile-project-root-function))
+;; we need this wrapper to match Projectile's API
+(defun projectile-project-current (dir)
+  "Retrieve the root directory of the project at DIR using `project-current'."
+  (cl-first (cdr (cdr (project-current nil dir)))))
+
+(setq projectile-project-root-functions '(projectile-project-current))
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
-(setq org-directory "~/org/")
+(setq org-directory "~/Documents/code/org-airbyte/")
 (setq org-capture-templates
-   `(("t" "Todo" entry (file+headline ,(concat org-directory "SOLV/todo.org")
+   `(("t" "Todo" entry (file+headline ,(concat org-directory "AIRBYTE/todo.org")
                                      "Inbox")
       "* TODO %?\n  %i\n  %a")
-     ("j" "Journal" entry (file+datetree ,(concat org-directory "SOLV/journal.org"))
+     ("j" "Journal" entry (file+datetree ,(concat org-directory "AIRBYTE/journal.org"))
       "* %?\nEntered on %U\n  %i\n  %a")))
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
@@ -115,13 +136,14 @@
   :desc "paredit barf forward" "b l" #'paredit-forward-barf-sexp
   :desc "paredit barf backward" "b h" #'paredit-backward-barf-sexp)
 
-(map!
- :localleader
- :prefix ("s" . "surround")
- :map (clojure-mode-map)
-  :desc "paredit wrap round" "(" #'paredit-wrap-round
-  :desc "paredit wrap square" "[" #'paredit-wrap-square
-  :desc "paredit wrap curly" "{" #'paredit-wrap-curly)
+;; THis gets messed up w/ paredit
+;; (map!
+;;  :localleader
+;;  :prefix ("s" . "surround")
+;;  :map (clojure-mode-map)
+;;   :desc "paredit wrap round" "(" #'paredit-wrap-round
+;;   :desc "paredit wrap square" "[" #'paredit-wrap-square
+;;   :desc "paredit wrap curly" "{" #'paredit-wrap-curly)
 
 (map!
  :leader
@@ -180,5 +202,16 @@
 ;; (evil-define-key 'normal vterm-mode-map (kbd "i")        #'evil-insert-resume)
 ;; (evil-define-key 'normal vterm-mode-map (kbd "o")        #'evil-insert-resume)
 ;; (evil-define-key 'normal vterm-mode-map (kbd "<return>") #'evil-insert-resume)
+
+;; LSP java setup
+(add-hook 'java-mode-hook #'lsp)
+(setq lsp-java-vmargs '("-Xmx2G" "-Xms2G"))
+(setq read-process-output-max (* 1024 1024))
+;; This works because format on save enabled modes is negated
+(setq +format-on-save-enabled-modes
+      '(not emacs-lisp-mode java-mode))  ; elisp's mechanisms are good enough
+(setq lsp-java-format-settings-url "~/Downloads/intellij-java-google-style.xml")
+(setq lsp-java-format-settings-profile "GoogleStyle")
+
 (provide 'config)
 ;;; config.el ends here

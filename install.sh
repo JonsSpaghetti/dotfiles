@@ -44,11 +44,11 @@ function create_symlinks {
 	ln -s $(pwd)/zsh/zshrc ~/.zshrc
 	ln -s $(pwd)/zsh/zshrc-aliases ~/.zshrc.aliases
 	ln -s $(pwd)/tmux/conf ~/.tmux.conf
-	ln -s ./doom/config.el ~/.doom.d/config.el
-	ln -s ./doom/init.el ~/.doom.d/init.el
-	ln -s ./doom/private.el ~/.doom.d/private.el
-	ln -s ./doom/packages.el ~/.doom.d/packages.el
-	ln -s ./doom/custom.el ~/.doom.d/custom.el
+	ln -s $(pwd)/doom/config.el ~/.doom.d/config.el
+	ln -s $(pwd)/doom/init.el ~/.doom.d/init.el
+	ln -s $(pwd)/doom/private.el ~/.doom.d/private.el
+	ln -s $(pwd)/doom/packages.el ~/.doom.d/packages.el
+	ln -s $(pwd)/doom/custom.el ~/.doom.d/custom.el
 	    # . ~/.vimrc
 	    . ~/.zshrc
 	    tmux source-file ~/.tmux.conf
