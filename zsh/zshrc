@@ -12,6 +12,8 @@ export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.g
 # File where we'll keep this machine's aliases
 test -f ~/.zshrc.aliases && source ~/.zshrc.aliases
 
+test -f ~/.zshrc.airbyte && source ~/.zshrc.airbyte
+
 # Any other local zshrc config
 test -f ~/.zshrc.loc && source ~/.zshrc.loc
 

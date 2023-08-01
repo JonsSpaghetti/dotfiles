@@ -68,6 +68,15 @@
         (split-string current-region-string "\n")
         separator)))
 
+(defun pretty-arrayify (separator surround)
+  "Converts the current region lines to a single line, CSV value, separated by the provided separator string."
+  (interactive "sEnter separator character: \nsEnter surround character: ")
+  (setq current-region-string (buffer-substring-no-properties (region-beginning) (region-end)))
+  (insert
+   (mapconcat (lambda (str) (if (> (length str) 0) (concat surround str surround "\n")))
+        (split-string current-region-string "\n")
+        separator)))
+
 (defun unarrayify (separator)
   "Converts the current region line, as a csv string, to a set of independent lines, splitting the string based on the provided separator."
   (interactive "sEnter separator character: ")
@@ -117,5 +126,20 @@
   "Do whatever I want"
   (interactive)
   (projectile-root-top-down buffer-file-name))
+
+(defun keep-csv-column (column)
+  "Remove all CSV columns except the specified COLUMN."
+  (interactive "nKeep column: ")
+  (save-excursion
+    (goto-char (point-min))
+    (while (not (eobp))
+      (let ((line (buffer-substring-no-properties (point-at-bol) (point-at-eol))))
+        (setq columns (split-string line ","))
+        (setq new-line (nth column columns))
+        (delete-region (point-at-bol) (point-at-eol))
+        (insert new-line)
+        (forward-line)))))
+
+
 
 ;;; private.el ends here
