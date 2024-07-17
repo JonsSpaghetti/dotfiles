@@ -49,6 +49,7 @@ alias gstp='git stash pop'
 alias grc='git rebase --continue'
 alias gca='git commit --amend'
 alias gri='git rebase -i HEAD~'
+alias gpn='git push -u origin $(git rev-parse --abbrev-ref HEAD)'
 
 alias plug='nvim --headless +PlugInstall +qa +UpdateRemotePlugins'
 alias vim="nvim"
@@ -85,3 +86,7 @@ alias build-dapi-tasks="docker-compose build --force-rm --no-cache --build-arg S
 export PATH="/usr/local/opt/python/libexec/bin:$PATH" # alias python and pip to python3 and pip3
 export PKG_CONFIG_PATH="/usr/local/opt/libffi/lib/pkgconfig"
 export DYLD_LIBRARY_PATH=/usr/local/opt/openssl/lib:$DYLD_LIBRARY_PATH
+
+# kubectl
+alias kc="kubectl"
+alias ked="kubectl edit deployment"

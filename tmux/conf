@@ -55,3 +55,7 @@ bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel "xc
 
 # This is the most annoying thing in the entire world.
 unbind Space
+
+#SCROOOOOOLL
+set-option -g history-limit 10000
+
