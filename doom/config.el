@@ -52,13 +52,76 @@
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
-(setq org-directory "~/Documents/code/org-airbyte/")
-(setq org-capture-templates
-   `(("t" "Todo" entry (file+headline ,(concat org-directory "AIRBYTE/todo.org")
-                                     "Inbox")
-      "* TODO %?\n  %i\n  %a")
-     ("j" "Journal" entry (file+datetree ,(concat org-directory "AIRBYTE/journal.org"))
-      "* %?\nEntered on %U\n  %i\n  %a")))
+(defvar org-directory "~/Documents/code/org-airbyte/")
+;; alist of org files i care about
+(defvar org-files
+      '(("todo" . "/todo.org")
+        ("journal" . "/journal.org")
+        ("work-log" . "/work-log.org")
+        ("notes" . "/notes.org")
+        ("meetings" . "/meetings.org")))
+
+(after! org
+  (setq org-capture-templates
+        `(("t" "Todo"
+           entry (file+headline ,(concat org-directory (assoc "todo" org-files)) "Inbox")
+           "* TODO [#B] %?\n:Created: %T\n"
+           :empty-lines 0)
+
+          ("j" "Journal"
+           entry (file+datetree ,(concat org-directory "/journal.org"))
+           "* %?"
+           :empty-lines 1)
+
+          ("l" "Work Log Entry"
+           entry (file+datetree ,(concat org-directory "/work-log.org"))
+           "* %?"
+           :empty-lines 0)
+          ("n" "Note"
+           entry (file+headline ,(concat org-directory "/notes.org") "Random Notes")
+           "** %?"
+           :empty-lines 0)
+          ("m" "Meeting"
+           entry (file+datetree ,(concat org-directory "/meetings.org"))
+           "* %? :meeting:%^g \n:Created: %T\n** Attendees\n*** \n** Notes\n** Action Items\n*** TODO [#A] "
+           :tree-type week
+           :clock-in t
+           :clock-resume t
+           :empty-lines 0)))
+
+  ;; TODO states
+  (setq org-todo-keywords
+        '((sequence "TODO(t)" "PLANNING(p)" "DELEGATED(e)" "IN-PROGRESS(s@/!)" "VERIFYING(v!)" "BLOCKED(b@)"  "|" "DONE(d!)" "OBE(o@!)" "WONT-DO(k@/!)")))
+
+  (setq org-todo-keyword-faces
+        '(("TODO" . (:foreground "GoldenRod" :weight bold))
+          ("PLANNING" . (:foreground "MediumPurple" :weight bold))
+          ("IN-PROGRESS" . (:foreground "CYAN" :weight bold))
+          ("VERIFYING" . (:foreground "DarkOrange" :weight bold))
+          ("BLOCKED" . (:foreground "Red" :weight bold))
+          ("Done" . (:foreground "LimeGreen" :weight bold))
+          ("OBE" . (:foreground "LimeGreen" :weight bold))
+          ("WONT-DO" . (:foreground "LimeGreen" :weight bold))
+          ("[-]" . +org-todo-active)
+          ("STRT" . +org-todo-active)
+          ("[?]" . +org-todo-onhold)
+          ("WAIT" . +org-todo-onhold)
+          ("HOLD" . +org-todo-onhold)
+          ("PROJ" . +org-todo-project)
+          ("NO" . +org-todo-cancel)
+          ("KILL" . +org-todo-cancel)))
+
+  ;; Tag colors
+  (setq org-tag-faces
+        '(
+          ("planning"  . (:foreground "mediumPurple1" :weight bold))
+          ("backend"   . (:foreground "royalblue1"    :weight bold))
+          ("frontend"  . (:foreground "forest green"  :weight bold))
+          ("meeting"   . (:foreground "yellow1"       :weight bold))
+          ("CRITICAL"  . (:foreground "red1"          :weight bold)))))
+
+
+
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
