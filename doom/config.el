@@ -52,37 +52,41 @@
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
-(defvar org-directory "~/Documents/code/org-airbyte/")
+(setq org-directory "~/Documents/code/org-airbyte/")
 ;; alist of org files i care about
 (defvar org-files
-      '(("todo" . "/todo.org")
-        ("journal" . "/journal.org")
-        ("work-log" . "/work-log.org")
-        ("notes" . "/notes.org")
-        ("meetings" . "/meetings.org")))
+      '(("todo" . "todo.org")
+        ("journal" . "journal.org")
+        ("work-log" . "work-log.org")
+        ("notes" . "notes.org")
+        ("meetings" . "meetings.org")))
+
+(defun org-file (name)
+  "Get org-file by name"
+  (concat org-directory (cdr (assoc name org-files))))
 
 (after! org
   (setq org-capture-templates
         `(("t" "Todo"
-           entry (file+headline ,(concat org-directory (assoc "todo" org-files)) "Inbox")
+           entry (file+headline (org-file "todo") "Inbox")
            "* TODO [#B] %?\n:Created: %T\n"
            :empty-lines 0)
 
           ("j" "Journal"
-           entry (file+datetree ,(concat org-directory "/journal.org"))
+           entry (file+datetree (org-file "journal"))
            "* %?"
            :empty-lines 1)
 
           ("l" "Work Log Entry"
-           entry (file+datetree ,(concat org-directory "/work-log.org"))
+           entry (file+datetree (org-file "work-log"))
            "* %?"
            :empty-lines 0)
           ("n" "Note"
-           entry (file+headline ,(concat org-directory "/notes.org") "Random Notes")
+           entry (file+headline (org-file "notes") "Random Notes")
            "** %?"
            :empty-lines 0)
           ("m" "Meeting"
-           entry (file+datetree ,(concat org-directory "/meetings.org"))
+           entry (file+datetree (org-file "meetings"))
            "* %? :meeting:%^g \n:Created: %T\n** Attendees\n*** \n** Notes\n** Action Items\n*** TODO [#A] "
            :tree-type week
            :clock-in t
