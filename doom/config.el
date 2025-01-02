@@ -62,31 +62,38 @@
         ("meetings" . "meetings.org")))
 
 (defun org-file (name)
-  "Get org-file by name"
+  "Get org-file by NAME."
   (concat org-directory (cdr (assoc name org-files))))
 
 (after! org
+  (setq org-agenda-files
+        `(,(org-file "todo")
+          ,(org-file "journal")
+          ,(org-file "work-log")
+          ,(org-file "notes")
+          ,(org-file "meetings")))
+
   (setq org-capture-templates
         `(("t" "Todo"
-           entry (file+headline (org-file "todo") "Inbox")
+           entry (file+headline ,(org-file "todo") "Inbox")
            "* TODO [#B] %?\n:Created: %T\n"
            :empty-lines 0)
 
           ("j" "Journal"
-           entry (file+datetree (org-file "journal"))
+           entry (file+datetree ,(org-file "journal"))
            "* %?"
            :empty-lines 1)
 
           ("l" "Work Log Entry"
-           entry (file+datetree (org-file "work-log"))
+           entry (file+datetree ,(org-file "work-log"))
            "* %?"
            :empty-lines 0)
           ("n" "Note"
-           entry (file+headline (org-file "notes") "Random Notes")
+           entry (file+headline ,(org-file "notes") "Random Notes")
            "** %?"
            :empty-lines 0)
           ("m" "Meeting"
-           entry (file+datetree (org-file "meetings"))
+           entry (file+datetree ,(org-file "meetings"))
            "* %? :meeting:%^g \n:Created: %T\n** Attendees\n*** \n** Notes\n** Action Items\n*** TODO [#A] "
            :tree-type week
            :clock-in t
@@ -95,16 +102,16 @@
 
   ;; TODO states
   (setq org-todo-keywords
-        '((sequence "TODO(t)" "PLANNING(p)" "DELEGATED(e)" "IN-PROGRESS(s@/!)" "VERIFYING(v!)" "BLOCKED(b@)"  "|" "DONE(d!)" "OBE(o@!)" "WONT-DO(k@/!)")))
+        '((sequence "TODO(t)" "PLANNING(p)" "DELEGATED(e)" "IN-PROGRESS(s@/!)" "VERIFYING(v!)" "BLOCKED(b@)"  "|" "DONE(d!)" "WONT-DO(k@/!)")))
 
   (setq org-todo-keyword-faces
         '(("TODO" . (:foreground "GoldenRod" :weight bold))
           ("PLANNING" . (:foreground "MediumPurple" :weight bold))
+          ("DELEGATED" . (:foreground "DeepPink" :weight bold))
           ("IN-PROGRESS" . (:foreground "CYAN" :weight bold))
           ("VERIFYING" . (:foreground "DarkOrange" :weight bold))
           ("BLOCKED" . (:foreground "Red" :weight bold))
           ("Done" . (:foreground "LimeGreen" :weight bold))
-          ("OBE" . (:foreground "LimeGreen" :weight bold))
           ("WONT-DO" . (:foreground "LimeGreen" :weight bold))
           ("[-]" . +org-todo-active)
           ("STRT" . +org-todo-active)
