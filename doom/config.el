@@ -87,12 +87,13 @@
 
   ;; TODO states
   (setq org-todo-keywords
-        '((sequence "TODO(t)" "PLANNING(p)" "DELEGATED(e)" "IN-PROGRESS(s@/!)" "VERIFYING(v!)" "BLOCKED(b@)"  "|" "DONE(d!)" "WONT-DO(k@/!)")))
+        '((sequence "TODO(t)" "SCHEDULED(c)" "PLANNING(p)" "DELEGATED(e)" "IN-PROGRESS(s@/!)" "VERIFYING(v!)" "BLOCKED(b@)"  "|" "DONE(d!)" "WONT-DO(k@/!)")))
 
   (setq org-todo-keyword-faces
         '(("TODO" . (:foreground "GoldenRod" :weight bold))
           ("PLANNING" . (:foreground "MediumPurple" :weight bold))
           ("DELEGATED" . (:foreground "DeepPink" :weight bold))
+          ("SCHEDULED" . (:foreground "RoyalBlue1" :weight bold))
           ("IN-PROGRESS" . (:foreground "CYAN" :weight bold))
           ("VERIFYING" . (:foreground "DarkOrange" :weight bold))
           ("BLOCKED" . (:foreground "Red" :weight bold))
@@ -116,8 +117,22 @@
           ("meeting"   . (:foreground "yellow1"       :weight bold))
           ("CRITICAL"  . (:foreground "red1"          :weight bold)))))
 
+(after! org-agenda
+  (setq org-super-agenda-groups
+        '((:name "Today"
+           :deadline today
+           :scheduled today)
+          (:name "Past Deadline"
+           :and (:deadline past :todo ("TODO" "PLANNING" "DELEGATED" "SCHEDULED" "IN-PROGRESS")))
+          (:name "Important"
+           :and (:priority> "B"))))
+
+  (setq org-super-agenda-header-map (make-sparse-keymap)))
 
 
+(defun org-get-all-tags-list ()
+  (interactive)
+  (mapcar 'car (org-global-tags-completion-table)))
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
