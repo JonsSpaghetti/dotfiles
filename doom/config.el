@@ -35,31 +35,16 @@
 ;; This will probably need to change every single time I get a new pc. Needed to compile parinfer-rust and put the build file somewhere
 (setq parinfer-rust-library "~/.emacs.d/parinfer-rust/libparinfer_rust.dylib")
 
-;; SO that subprojects don't get their own projects automagically
-(defun custom-projectile-project-root-function
-  (dir)
-  "So that we don't accidentally create projects from git submodules"
-  (let ((default-directory dir))
-    (vc-root-dir)))
-
-;; (setq projectile-project-root-functions '(custom-projectile-project-root-function))
-;; we need this wrapper to match Projectile's API
-(defun projectile-project-current (dir)
-  "Retrieve the root directory of the project at DIR using `project-current'."
-  (cl-first (cdr (cdr (project-current nil dir)))))
-
-(setq projectile-project-root-functions '(projectile-project-current))
-
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/Documents/code/org-airbyte/")
 ;; alist of org files i care about
 (defvar org-files
-      '(("todo" . "todo.org")
-        ("journal" . "journal.org")
-        ("work-log" . "work-log.org")
-        ("notes" . "notes.org")
-        ("meetings" . "meetings.org")))
+  '(("todo" . "todo.org")
+    ("journal" . "journal.org")
+    ("work-log" . "work-log.org")
+    ("notes" . "notes.org")
+    ("meetings" . "meetings.org")))
 
 (defun org-file (name)
   "Get org-file by NAME."
@@ -165,9 +150,9 @@
 (add-hook 'python-mode '(pyvenv-workon projectile-project-name))
 
 (with-eval-after-load 'evil
-    (defalias #'forward-evil-word #'forward-evil-symbol)
-    ;; make evil-search-word look for symbol rather than word boundaries
-    (setq-default evil-symbol-word-search t))
+  (defalias #'forward-evil-word #'forward-evil-symbol)
+  ;; make evil-search-word look for symbol rather than word boundaries
+  (setq-default evil-symbol-word-search t))
 
 (setq display-line-numbers-type 'relative)
 (setq projectile-project-search-path '("~/code/" "~/Documents/code/"))
@@ -178,7 +163,7 @@
 
 (define-key evil-normal-state-map (kbd "s") 'evil-substitute)
 (after! evil-snipe
-    (evil-snipe-mode -1))
+  (evil-snipe-mode -1))
 
 (map! :localleader
       :desc "under cursor"
@@ -205,10 +190,10 @@
  :localleader
  :prefix ("p" . "paredit")
  :map (clojure-mode-map)
-  :desc "paredit slurp forward" "s l" #'paredit-forward-slurp-sexp
-  :desc "paredit slurp backward" "s h" #'paredit-backward-slurp-sexp
-  :desc "paredit barf forward" "b l" #'paredit-forward-barf-sexp
-  :desc "paredit barf backward" "b h" #'paredit-backward-barf-sexp)
+ :desc "paredit slurp forward" "s l" #'paredit-forward-slurp-sexp
+ :desc "paredit slurp backward" "s h" #'paredit-backward-slurp-sexp
+ :desc "paredit barf forward" "b l" #'paredit-forward-barf-sexp
+ :desc "paredit barf backward" "b h" #'paredit-backward-barf-sexp)
 
 ;; THis gets messed up w/ paredit
 ;; (map!
@@ -239,7 +224,7 @@
 (set-face-attribute 'variable-pitch nil :height 120)
 
 (with-eval-after-load 'org-faces
-    (set-face-attribute 'org-table nil :inherit 'fixed-pitch))
+  (set-face-attribute 'org-table nil :inherit 'fixed-pitch))
 
 (setq orderless-matching-styles '(orderless-regexp orderless-flex))
 
@@ -247,8 +232,8 @@
 
 ;; multi-Vterm
 ;; (add-hook 'vterm-mode-hook
-        ;; (lambda ()))
-; (define-key vterm-mode-map [return]                      #'vterm-send-return)
+;; (lambda ()))
+                                        ; (define-key vterm-mode-map [return]                      #'vterm-send-return)
 
 ;; (setq vterm-keymap-exceptions nil)
 ;; (evil-define-key 'insert vterm-mode-map (kbd "C-e")      #'vterm--self-insert)
