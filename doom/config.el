@@ -87,15 +87,15 @@
 
   ;; TODO states
   (setq org-todo-keywords
-        '((sequence "TODO(t)" "SCHEDULED(c)" "PLANNING(p)" "DELEGATED(e)" "IN-PROGRESS(s@/!)" "VERIFYING(v!)" "BLOCKED(b@)"  "|" "DONE(d!)" "WONT-DO(k@/!)")))
+        '((sequence "TODO(t)" "NEXT(n)" "SCHEDULED(c)" "PLANNING(p)" "DELEGATED(e)" "IN-PROGRESS(s@/!)" "BLOCKED(b@)"  "|" "DONE(d!)" "WONT-DO(k@/!)")))
 
   (setq org-todo-keyword-faces
         '(("TODO" . (:foreground "GoldenRod" :weight bold))
+          ("NEXT" . (:foreground "DarkOrange" :weight bold))
           ("PLANNING" . (:foreground "MediumPurple" :weight bold))
           ("DELEGATED" . (:foreground "DeepPink" :weight bold))
           ("SCHEDULED" . (:foreground "RoyalBlue1" :weight bold))
           ("IN-PROGRESS" . (:foreground "CYAN" :weight bold))
-          ("VERIFYING" . (:foreground "DarkOrange" :weight bold))
           ("BLOCKED" . (:foreground "Red" :weight bold))
           ("Done" . (:foreground "LimeGreen" :weight bold))
           ("WONT-DO" . (:foreground "LimeGreen" :weight bold))
@@ -120,12 +120,11 @@
 (after! org-agenda
   (setq org-super-agenda-groups
         '((:name "Today"
-           :deadline today
            :scheduled today)
           (:name "Past Deadline"
            :and (:deadline past :todo ("TODO" "PLANNING" "DELEGATED" "SCHEDULED" "IN-PROGRESS")))
           (:name "Important"
-           :and (:priority> "B"))))
+           :priority> "B")))
 
   (setq org-super-agenda-header-map (make-sparse-keymap)))
 
