@@ -121,13 +121,24 @@
   (setq org-super-agenda-groups
         '((:name "Today"
            :scheduled today)
+          (:name "WIP"
+           :todo ("IN-PROGRESS"))
           (:name "Past Deadline"
-           :and (:deadline past :todo ("TODO" "PLANNING" "DELEGATED" "SCHEDULED" "IN-PROGRESS")))
+           :and (:deadline past :todo ("TODO" "NEXT" "PLANNING" "DELEGATED" "SCHEDULED" "IN-PROGRESS")))
           (:name "Important"
-           :priority> "B")))
+           :priority> "B")
+          (:name "Scheduled"
+           :scheduled t
+           :deadline t)
+          (:name "Up Next"
+           :todo ("NEXT"))
+          (:name "Workflow"
+           :tag ("emacs"))))
 
-  (setq org-super-agenda-header-map (make-sparse-keymap)))
+  (setq org-super-agenda-header-map (make-sparse-keymap))
+  (org-super-agenda-mode))
 
+(add-hook 'org-agenda-mode-hook (display-line-numbers-mode))
 
 (defun org-get-all-tags-list ()
   (interactive)
@@ -135,7 +146,9 @@
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
-(setq display-line-numbers-type 'relative)
+;; Visual will allow us to skip over folded stuff
+(setq display-line-numbers-type 'visual)
+(global-display-line-numbers-mode)
 
 ;; Load private functions etc.
 (load! "./private.el")
