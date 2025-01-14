@@ -128,7 +128,8 @@ export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
 export LESS="-SRXF"
 
-source "/opt/homebrew/opt/spaceship/spaceship.zsh"
+# source "/opt/homebrew/opt/spaceship/spaceship.zsh"
+eval "$(starship init zsh)"
 source "/usr/local/bin/cmds"
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 export LSP_USE_PLISTS=true
@@ -154,8 +155,7 @@ alias octavia="docker run -i --rm -v \$(pwd):/home/octavia-project --network hos
 # export DOCKER_HOST=unix:///Users/jon/.colima/ab-control-plane/docker.sock
 # export DOCKER_PROVIDER=colima
 export TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE=/var/run/docker.sock
-export JAVA_HOME=/opt/homebrew/Cellar/openjdk/21.0.2/libexec/openjdk.jdk/Contents/Home
-
+export JAVA_HOME=/opt/homebrew/Cellar/openjdk@21/21.0.5/libexec/openjdk.jdk/Contents/Home
 
 source /Users/jon/.airbuild/airbuildrc # SourceAirbyteRC
 export NVM_DIR="$HOME/.config/nvm"

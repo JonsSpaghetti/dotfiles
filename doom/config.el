@@ -79,7 +79,7 @@
            :empty-lines 0)
           ("m" "Meeting"
            entry (file+datetree ,(org-file "meetings"))
-           "* %? :meeting:%^g \n:Created: %T\n** Attendees\n*** \n** Notes\n** Action Items\n*** TODO [#A] "
+           "* %? :meeting:%^g \nCreated: %U\nScheduled: %T\n** Attendees\n*** \n** Notes\n** Action Items\n*** TODO [#A] "
            :tree-type week
            :clock-in t
            :clock-resume t
@@ -119,10 +119,13 @@
 
 (after! org-agenda
   (setq org-super-agenda-groups
-        '((:name "Today"
+        '(
+          (:name "Today"
            :scheduled today)
           (:name "WIP"
            :todo ("IN-PROGRESS"))
+          (:name "Up Next"
+           :todo ("NEXT"))
           (:name "Past Deadline"
            :and (:deadline past :todo ("TODO" "NEXT" "PLANNING" "DELEGATED" "SCHEDULED" "IN-PROGRESS")))
           (:name "Important"
@@ -130,8 +133,8 @@
           (:name "Scheduled"
            :scheduled t
            :deadline t)
-          (:name "Up Next"
-           :todo ("NEXT"))
+          (:name "Meetings"
+           :tag ("meeting"))
           (:name "Workflow"
            :tag ("emacs"))))
 
@@ -143,6 +146,26 @@
 (defun org-get-all-tags-list ()
   (interactive)
   (mapcar 'car (org-global-tags-completion-table)))
+
+;; Force org agenda to start today
+(setq org-agenda-start-day nil)
+
+(setq org-agenda-span 'day)
+(setq org-agenda-skip-scheduled-if-deadline-is-shown t)
+
+;; Keymap for org agenda
+(map!
+ :map org-agenda-mode-map
+ :nv "<escape>" #'evil-force-normal-state)
+
+(global-set-key (kbd "<escape>") #'evil-force-normal-state)
+
+(map!
+ :localleader
+ :prefix ("v" . "view")
+ :map org-agenda-mode-map
+ :desc "day view" "d" #'org-agenda-day-view)
+
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
