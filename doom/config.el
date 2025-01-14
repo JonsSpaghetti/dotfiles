@@ -156,9 +156,7 @@
 ;; Keymap for org agenda
 (map!
  :map org-agenda-mode-map
- :nv "<escape>" #'evil-force-normal-state)
-
-(global-set-key (kbd "<escape>") #'evil-force-normal-state)
+ "<escape>" #'org-agenda-redo)
 
 (map!
  :localleader
