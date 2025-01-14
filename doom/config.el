@@ -61,18 +61,12 @@
   (setq org-capture-templates
         `(("t" "Todo"
            entry (file+headline ,(org-file "todo") "Inbox")
-           "* TODO [#B] %?\n:Created: %T\n"
+           "* TODO [#B] %?\n:Created: %U\n"
            :empty-lines 0)
-
           ("j" "Journal"
            entry (file+datetree ,(org-file "journal"))
            "* %?"
            :empty-lines 1)
-
-          ("l" "Work Log Entry"
-           entry (file+datetree ,(org-file "work-log"))
-           "* %?"
-           :empty-lines 0)
           ("n" "Note"
            entry (file+headline ,(org-file "notes") "Random Notes")
            "** %?"
