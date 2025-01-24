@@ -39,12 +39,13 @@
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/Documents/code/org-airbyte/")
 ;; alist of org files i care about
-(defvar org-files
-  '(("todo" . "todo.org")
-    ("journal" . "journal.org")
-    ("work-log" . "work-log.org")
-    ("notes" . "notes.org")
-    ("meetings" . "meetings.org")))
+(setq org-files
+      '(("todo" . "todo.org")
+        ("journal" . "journal.org")
+        ("work-log" . "work-log.org")
+        ("notes" . "notes.org")
+        ("meetings" . "meetings.org")
+        ("one-on-one" . "one-on-one.org")))
 
 (defun org-file (name)
   "Get org-file by NAME."
@@ -56,7 +57,9 @@
           ,(org-file "journal")
           ,(org-file "work-log")
           ,(org-file "notes")
-          ,(org-file "meetings")))
+          ,(org-file "meetings")
+          ,(org-file "one-on-one")))
+
 
   (setq org-capture-templates
         `(("t" "Todo"
@@ -73,11 +76,18 @@
            :empty-lines 0)
           ("m" "Meeting"
            entry (file+datetree ,(org-file "meetings"))
-           "* %? :meeting:%^g \nCreated: %U\nScheduled: %T\n** Attendees\n*** \n** Notes\n** Action Items\n*** TODO [#A] "
+           "* %? %u :meeting:%^g \nCreated: %U\nScheduled: %T\n** Attendees\n*** \n** Notes\n** Action Items\n*** TODO [#A] "
            :tree-type week
            :clock-in t
            :clock-resume t
-           :empty-lines 0)))
+           :empty-lines 0)
+          ("o" "One on One"
+           entry (file ,(org-file "one-on-one"))
+           "* %u \nCreated: %U\n** Notes\n *** Working on\n%?"
+           :empty-lines 0
+           :jump-to-captured t
+           :refile-targets ((,(org-file "one-on-one") :tag . "oneonone")))))
+
 
   ;; TODO states
   (setq org-todo-keywords
@@ -133,6 +143,12 @@
            :tag ("emacs"))))
 
   (setq org-super-agenda-header-map (make-sparse-keymap))
+
+  ;; Force org agenda to start today
+  (setq org-agenda-start-day nil)
+
+  (setq org-agenda-span 'day)
+  (setq org-agenda-skip-scheduled-if-deadline-is-shown t)
   (org-super-agenda-mode))
 
 (add-hook 'org-agenda-mode-hook (display-line-numbers-mode))
@@ -140,12 +156,6 @@
 (defun org-get-all-tags-list ()
   (interactive)
   (mapcar 'car (org-global-tags-completion-table)))
-
-;; Force org agenda to start today
-(setq org-agenda-start-day nil)
-
-(setq org-agenda-span 'day)
-(setq org-agenda-skip-scheduled-if-deadline-is-shown t)
 
 ;; Keymap for org agenda
 (map!
