@@ -47,9 +47,14 @@
         ("meetings" . "meetings.org")
         ("one-on-one" . "one-on-one.org")))
 
+(defun jmt/org-refile-candidates ()
+  (directory-files org-directory t ".*\\.org$"))
+
 (defun org-file (name)
   "Get org-file by NAME."
   (concat org-directory (cdr (assoc name org-files))))
+
+(add-to-list 'org-refile-targets '(jmt/org-refile-candidates :maxlevel . 3))
 
 (after! org
   (setq org-agenda-files
@@ -83,10 +88,10 @@
            :empty-lines 0)
           ("o" "One on One"
            entry (file ,(org-file "one-on-one"))
-           "* %u \nCreated: %U\n** Notes\n *** Working on\n%?"
+           "* %u 1:1 \nCreated: %U\n** Notes\n*** Working on\n%?"
            :empty-lines 0
            :jump-to-captured t
-           :refile-targets ((,(org-file "one-on-one") :tag . "oneonone")))))
+           :refile-targets (,(org-file "one-on-one") :tag . "oneonone"))))
 
 
   ;; TODO states
