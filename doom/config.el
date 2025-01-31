@@ -91,8 +91,7 @@
            "* %u 1:1 \nCreated: %U\n** Notes\n*** Working on\n%?"
            :empty-lines 0
            :jump-to-captured t
-           :refile-targets (,(org-file "one-on-one") :tag . "oneonone"))))
-
+           :refile-targets ((,(org-file "one-on-one") . (:tag . "oneonone"))))))
 
   ;; TODO states
   (setq org-todo-keywords
@@ -139,11 +138,11 @@
            :and (:deadline past :todo ("TODO" "NEXT" "PLANNING" "DELEGATED" "SCHEDULED" "IN-PROGRESS")))
           (:name "Important"
            :priority> "B")
+          (:name "Meetings"
+           :tag ("meeting"))
           (:name "Scheduled"
            :scheduled t
            :deadline t)
-          (:name "Meetings"
-           :tag ("meeting"))
           (:name "Workflow"
            :tag ("emacs"))))
 
@@ -172,6 +171,12 @@
  :prefix ("v" . "view")
  :map org-agenda-mode-map
  :desc "day view" "d" #'org-agenda-day-view)
+
+(map!
+ :localleader
+ :prefix("s" . "subtree")
+ :map org-mode-map
+ :desc "refile copy" "r c" #'org-refile-copy)
 
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
