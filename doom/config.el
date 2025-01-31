@@ -11,6 +11,8 @@
 (setq user-full-name "Jon Tan"
       user-mail-address "jon08192@gmail.com")
 
+(message "CONFIG.EL LOADING...")
+
 ;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
 ;; are the three important ones:
 ;;
@@ -54,9 +56,8 @@
   "Get org-file by NAME."
   (concat org-directory (cdr (assoc name org-files))))
 
-(add-to-list 'org-refile-targets '(jmt/org-refile-candidates :maxlevel . 3))
-
 (setq org-id-link-to-org-use-id t)
+
 ;; Code to allow adding refile link when doing a refile
 ;; So the bookmark alist is where the file and context string is
 (defun org-refile--insert-link ( &rest _)
@@ -71,7 +72,10 @@
             :before
             #'org-refile--insert-link)
 
-(after! 'org
+(after! org
+  (message "ORG STUFF LOADING...")
+  (add-to-list 'org-refile-targets '(jmt/org-refile-candidates :maxlevel . 3))
+
   (setq org-agenda-files
         `(,(org-file "todo")
           ,(org-file "journal")
@@ -138,15 +142,24 @@
           ("backend"   . (:foreground "royalblue1"    :weight bold))
           ("frontend"  . (:foreground "forest green"  :weight bold))
           ("meeting"   . (:foreground "yellow1"       :weight bold))
-          ("CRITICAL"  . (:foreground "red1"          :weight bold)))))
+          ("CRITICAL"  . (:foreground "red1"          :weight bold))))
+
+  (map!
+   :localleader
+   :prefix ("r" . "refile")
+   :map org-mode-map
+   :desc "refile copy" "c" #'org-refile-copy
+   :desc "refile" "r" #'org-refile))
+
 
 (after! org-agenda
+  (message "ORG AGENDA STUFF LOADING...")
   (setq org-super-agenda-groups
         '(
           (:name "Today"
            :scheduled today)
-          (:name "WIP"
-           :todo ("IN-PROGRESS"))
+          (:name "WIP")
+
           (:name "Up Next"
            :todo ("NEXT"))
           (:name "Past Deadline"
@@ -168,7 +181,7 @@
 
   (setq org-agenda-span 'day)
   (setq org-agenda-skip-scheduled-if-deadline-is-shown t)
-  (org-super-agenda-mode))
+  (org-super-agenda-mode t))
 
 (add-hook 'org-agenda-mode-hook (display-line-numbers-mode))
 
@@ -177,21 +190,16 @@
   (mapcar 'car (org-global-tags-completion-table)))
 
 ;; Keymap for org agenda
-(map!
- :map org-agenda-mode-map
- "<escape>" #'org-agenda-redo)
-
-(map!
- :localleader
- :prefix ("v" . "view")
- :map org-agenda-mode-map
- :desc "day view" "d" #'org-agenda-day-view)
-
-(map!
- :localleader
- :prefix ("s" . "subtree")
- :map org-mode-map
- :desc "refile copy" "r c" #'org-refile-copy)
+(after! evil-org-agenda
+  (message "EVIL ORG AGENDA STUFF LOADING...")
+  (map!
+   :map org-agenda-mode-map
+   "<escape>" #'org-agenda-redo)
+  (map!
+   :localleader
+   :prefix ("v" . "view")
+   :map org-agenda-mode-map
+   :desc "day view" "d" #'org-agenda-day-view))
 
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
