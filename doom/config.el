@@ -56,7 +56,22 @@
 
 (add-to-list 'org-refile-targets '(jmt/org-refile-candidates :maxlevel . 3))
 
-(after! org
+(setq org-id-link-to-org-use-id t)
+;; Code to allow adding refile link when doing a refile
+;; So the bookmark alist is where the file and context string is
+(defun org-refile--insert-link ( &rest _)
+  (org-back-to-heading)
+  (let* ((refile-region-marker (point-marker))
+         (source-link (org-store-link nil)))
+    (org-insert-heading)
+    (insert source-link)
+    (goto-char refile-region-marker)))
+
+(advice-add 'org-refile
+            :before
+            #'org-refile--insert-link)
+
+(after! 'org
   (setq org-agenda-files
         `(,(org-file "todo")
           ,(org-file "journal")
@@ -174,7 +189,7 @@
 
 (map!
  :localleader
- :prefix("s" . "subtree")
+ :prefix ("s" . "subtree")
  :map org-mode-map
  :desc "refile copy" "r c" #'org-refile-copy)
 
@@ -216,7 +231,6 @@
   ;; make evil-search-word look for symbol rather than word boundaries
   (setq-default evil-symbol-word-search t))
 
-(setq display-line-numbers-type 'relative)
 (setq projectile-project-search-path '("~/code/" "~/Documents/code/"))
 (setq python-remove-cwd-from-path nil)
 
