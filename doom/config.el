@@ -29,7 +29,8 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(doom-themes-treemacs-config)
+(with-eval-after-load 'doom-themes
+  (doom-themes-treemacs-config))
 (global-tree-sitter-mode)
 (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
 (setq doom-theme 'doom-one)
@@ -100,7 +101,7 @@
            :empty-lines 0)
           ("m" "Meeting"
            entry (file+datetree ,(org-file "meetings"))
-           "* %? %u :meeting:%^g \nCreated: %U\nScheduled: %T\n** Attendees\n*** \n** Notes\n** Action Items\n*** TODO [#A] "
+           "* %u %? :meeting:%^g \nCreated: %U\nScheduled: %T\n** Attendees\n*** \n** Notes\n** Action Items\n*** TODO [#A] "
            :tree-type week
            :clock-in t
            :clock-resume t
@@ -347,14 +348,17 @@
 ;; (evil-define-key 'normal vterm-mode-map (kbd "<return>") #'evil-insert-resume)
 
 ;; LSP java setup
-(add-hook 'java-mode-hook #'lsp)
-(setq lsp-java-vmargs '("-Xmx2G" "-Xms2G"))
-(setq read-process-output-max (* 1024 1024))
-;; This works because format on save enabled modes is negated
-(setq +format-on-save-enabled-modes
-      '(not emacs-lisp-mode java-mode))  ; elisp's mechanisms are good enough
-(setq lsp-java-format-settings-url "~/Downloads/intellij-java-google-style.xml")
-(setq lsp-java-format-settings-profile "GoogleStyle")
+;; (add-hook 'java-mode-hook #'lsp)
+;; (setq lsp-java-vmargs '("-Xmx2G" "-Xms2G"))
+;; (setq read-process-output-max (* 1024 1024))
+;;;; This works because format on save enabled modes is negated
+;; (setq +format-on-save-enabled-modes
+;;       '(not emacs-lisp-mode java-mode))  ; elisp's mechanisms are good enough
+;; (setq lsp-java-format-settings-url "~/Downloads/intellij-java-google-style.xml")
+;; (setq lsp-java-format-settings-profile "GoogleStyle")
+
+(setq tab-always-indent 'complete)
+(add-to-list 'completion-styles 'initials t)
 
 (provide 'config)
 ;;; config.el ends here
