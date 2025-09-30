@@ -134,8 +134,6 @@ source "/usr/local/bin/cmds"
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 export LSP_USE_PLISTS=true
 export AIRBYTE_ROLE=airbyter
-export PATH="/opt/homebrew/opt/node@16/bin:$PATH"
-export PATH="/opt/homebrew/opt/node@16/bin:$PATH"
 
 # For poetry
 export PATH="/Users/jon/.local/bin:$PATH"
@@ -152,9 +150,7 @@ export OCTAVIA_ENABLE_TELEMETRY=False
 alias octavia="docker run -i --rm -v \$(pwd):/home/octavia-project --network host --env-file \${OCTAVIA_ENV_FILE} --user \$(id -u):\$(id -g) airbyte/octavia-cli:0.40.23"
 
 # Airbyte local dev/testing env vars 
-# export DOCKER_HOST=unix:///Users/jon/.colima/ab-control-plane/docker.sock
-# export DOCKER_PROVIDER=colima
-export TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE=/var/run/docker.sock
+export TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE=/Users/jon/.orbstack/run/docker.sock
 export JAVA_HOME=/opt/homebrew/Cellar/openjdk@21/21.0.5/libexec/openjdk.jdk/Contents/Home
 
 source /Users/jon/.airbuild/airbuildrc # SourceAirbyteRC

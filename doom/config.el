@@ -59,19 +59,27 @@
 
 (setq org-id-link-to-org-use-id t)
 
-;; Code to allow adding refile link when doing a refile
-;; So the bookmark alist is where the file and context string is
-(defun org-refile--insert-link ( &rest _)
+(defun jmt/org-refile-with-link (&optional arg)
+  "Refile the current Org heading and leave behind a link to its new location.
+If a prefix argument ARG is provided, it is passed along to `org-refile'.
+This function saves a link to the current heading, inserts a new heading containing
+that link as a placeholder, and then refiles the original heading."
+  (interactive "P")
+  ;; Make sure we’re at the start of the heading.
   (org-back-to-heading)
-  (let* ((refile-region-marker (point-marker))
-         (source-link (org-store-link nil)))
+  (let* ((refile-marker (point-marker))
+         (source-link (org-store-link nil)))  ; get a link to the current heading
+    ;; Insert a new heading to serve as the placeholder.
     (org-insert-heading)
     (insert source-link)
-    (goto-char refile-region-marker)))
+    ;; Return to the original heading.
+    (goto-char refile-marker)
+    ;; Now perform the refile.
+    (org-refile arg)))
 
-(advice-add 'org-refile
-            :before
-            #'org-refile--insert-link)
+(defun jmt/org-agenda-precreate-meeting ()
+  "Precreate meeting from org agenda heading at point")
+
 
 (after! org
   (message "ORG STUFF LOADING...")
@@ -89,7 +97,7 @@
   (setq org-capture-templates
         `(("t" "Todo"
            entry (file+headline ,(org-file "todo") "Inbox")
-           "* TODO [#B] %?\n:Created: %U\n"
+           "* TODO [#A] %?\n:Created: %U\n"
            :empty-lines 0)
           ("j" "Journal"
            entry (file+datetree ,(org-file "journal"))
@@ -101,7 +109,7 @@
            :empty-lines 0)
           ("m" "Meeting"
            entry (file+datetree ,(org-file "meetings"))
-           "* %u %? :meeting:%^g \nCreated: %U\nScheduled: %T\n** Attendees\n*** \n** Notes\n** Action Items\n*** TODO [#A] "
+           "* %u %? :meeting:%^g \nCreated: %U\nSCHEDULED: %T\n** Attendees\n*** \n** Notes\n** Action Items\n"
            :tree-type week
            :clock-in t
            :clock-resume t
@@ -110,7 +118,6 @@
            entry (file ,(org-file "one-on-one"))
            "* %u 1:1 \nCreated: %U\n** Notes\n*** Working on\n%?"
            :empty-lines 0
-           :jump-to-captured t
            :refile-targets ((,(org-file "one-on-one") . (:tag . "oneonone"))))))
 
   ;; TODO states
@@ -150,7 +157,8 @@
    :prefix ("r" . "refile")
    :map org-mode-map
    :desc "refile copy" "c" #'org-refile-copy
-   :desc "refile" "r" #'org-refile))
+   :desc "refile" "r" #'org-refile
+   :desc "refile link" "l" #'jmt/org-refile-with-link))
 
 
 (after! org-agenda
