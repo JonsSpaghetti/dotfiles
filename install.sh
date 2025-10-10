@@ -26,6 +26,16 @@ if [ "$1" == "first" ]; then
         # To install useful key bindings and fuzzy completion:
         $(brew --prefix)/opt/fzf/install
         sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+
+	# Emacs
+	#
+	brew tap railwaycat/emacsmacport
+	brew install emacs-mac --with-modules --with-native-comp
+	ln -s /usr/local/opt/emacs-mac/Emacs.app /Applications/Emacs.app
+
+	# Doom
+	git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
+	~/.emacs.d/bin/doom install
     else
         echo "Not sure what type of OS we're on here"
         exit 1
