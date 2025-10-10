@@ -130,7 +130,7 @@ export LESS="-SRXF"
 
 # source "/opt/homebrew/opt/spaceship/spaceship.zsh"
 eval "$(starship init zsh)"
-source "/usr/local/bin/cmds"
+test -f "/usr/local/bin/cmds" && source "/usr/local/bin/cmds"
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 export LSP_USE_PLISTS=true
 export AIRBYTE_ROLE=airbyter
@@ -153,10 +153,11 @@ alias octavia="docker run -i --rm -v \$(pwd):/home/octavia-project --network hos
 export TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE=/Users/jon/.orbstack/run/docker.sock
 export JAVA_HOME=/opt/homebrew/Cellar/openjdk@21/21.0.5/libexec/openjdk.jdk/Contents/Home
 
-source /Users/jon/.airbuild/airbuildrc # SourceAirbyteRC
 export NVM_DIR="$HOME/.config/nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 export NVM_CD_FLAGS=-q
 export NVM_BIN=/Users/jon/.config/nvm/versions/node/v20.11.0/bin
 export NVM_INC=/Users/jon/.config/nvm/versions/node/v20.11.0/include/node
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
