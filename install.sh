@@ -36,6 +36,9 @@ if [ "$1" == "first" ]; then
 	# Doom
 	git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
 	~/.emacs.d/bin/doom install
+
+	# vimrc stuff
+	mkdir -p ~/.config/nvim
     else
         echo "Not sure what type of OS we're on here"
         exit 1
@@ -53,6 +56,7 @@ function create_symlinks {
 	ln -s $(pwd)/vim/filetypes.vim ~/.vim_runtime/vimrcs/filetypes.vim
 	ln -s $(pwd)/vim/extended.vim ~/.vim_runtime/vimrcs/extended.vim
 	ln -s $(pwd)/vim/python.vim ~/.vim_runtime/vimrcs/python.vim
+	ln -s $(pwd)/vim/vimrc ~/.config/nvim/init.vim
 	ln -s $(pwd)/zsh/zshrc ~/.zshrc
 	ln -s $(pwd)/zsh/zshrc-aliases ~/.zshrc.aliases
 	ln -s $(pwd)/tmux/conf ~/.tmux.conf

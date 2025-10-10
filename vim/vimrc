@@ -6,8 +6,6 @@ let mapleader = ","
 " source ~/.vim_runtime/vimrcs/filetypes.vim
 " source ~/.vim_runtime/vimrcs/extended.vim
 
-
-
 " ============================================Initialize plugin system============================================
 if empty(glob('~/.vim/autoload/plug.vim'))
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
