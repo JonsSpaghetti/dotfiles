@@ -485,7 +485,7 @@ nnoremap H gT
 nnoremap L gt
 
 "Unmap esc so we use capslock (ctrl) + [
-inoremap jk <esc>
+inoremap jk <Esc>
 
 "Easier yanking/pasting to/from system register
 map <Leader>y "*y
