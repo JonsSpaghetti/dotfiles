@@ -22,7 +22,19 @@ if [ "$1" == "first" ]; then
     elif [[ "$OSTYPE" == "darwin24.0"  ]]; then
 	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 	sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-        brew install fzf tmux zsh curl git neovim bat nvm rg starship
+        brew install fzf \
+		tmux \
+		zsh \
+		curl \
+		git \
+		neovim \
+		bat \
+		nvm \
+		rg \
+		starship \
+		kubectx \
+		kubectl \
+		pgcli
         # To install useful key bindings and fuzzy completion:
         $(brew --prefix)/opt/fzf/install
         sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"

@@ -13,6 +13,7 @@ export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.g
 test -f ~/.zshrc.aliases && source ~/.zshrc.aliases
 
 test -f ~/.zshrc.airbyte && source ~/.zshrc.airbyte
+test -f ~/.zshrc.lambda && source ~/.zshrc.lambda
 
 # Any other local zshrc config
 test -f ~/.zshrc.loc && source ~/.zshrc.loc
@@ -154,3 +155,6 @@ export NVM_BIN=/Users/jon/.config/nvm/versions/node/v20.11.0/bin
 export NVM_INC=/Users/jon/.config/nvm/versions/node/v20.11.0/include/node
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
+
+# uv
+. "$HOME/.local/bin/env"

@@ -197,7 +197,8 @@
   ;; keybindings that touch evil maps must run after evil loads
   (define-key evil-normal-state-map (kbd "s") #'evil-substitute)
   (defalias #'forward-evil-word #'forward-evil-symbol)
-  (setq-default evil-symbol-word-search t))
+  (setq-default evil-symbol-word-search t)
+  (setq evil-escape-key-sequence "jk"))
 
 (setq projectile-project-search-path '("~/code/" "~/Documents/code/")
       python-remove-cwd-from-path nil)
@@ -215,7 +216,7 @@
 
 (map! :localleader :desc "copy line location" "c l n" #'copy-current-line-position-to-clipboard)
 
-(map! :leader :prefix ("r" . "rename")
+(map! :leader :prefix ("r" "rename")
       :desc "rename symbol" "n" #'lsp-rename)
 
 (map! :leader :prefix ("1")
