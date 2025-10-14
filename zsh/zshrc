@@ -54,6 +54,8 @@ alias tl="tmux ls"
 alias kc="kubectl"
 alias grep="rg"
 alias af="git diff --name-only | xargs autoflake --in-place --remove-all-unused-imports --remov-unused-variables"
+# Needed if we use macports emacs
+alias emacs=$(brew --prefix)/opt/emacs-mac/Emacs.app/Contents/MacOS/Emacs.sh "$@"
 
 win() {
   tmux split-window -h -c "#{pane_current_path}"
@@ -143,15 +145,6 @@ if [ -f '/Users/jon/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/jon/google-
 
 # The next line enables shell command completion for gcloud.
 if [ -f '/Users/jon/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/jon/google-cloud-sdk/completion.zsh.inc'; fi
-
-# OCTAVIA CLI 0.40.23
-OCTAVIA_ENV_FILE=/Users/jon/.octavia
-export OCTAVIA_ENABLE_TELEMETRY=False
-alias octavia="docker run -i --rm -v \$(pwd):/home/octavia-project --network host --env-file \${OCTAVIA_ENV_FILE} --user \$(id -u):\$(id -g) airbyte/octavia-cli:0.40.23"
-
-# Airbyte local dev/testing env vars 
-export TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE=/Users/jon/.orbstack/run/docker.sock
-export JAVA_HOME=/opt/homebrew/Cellar/openjdk@21/21.0.5/libexec/openjdk.jdk/Contents/Home
 
 export NVM_DIR="$HOME/.config/nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm

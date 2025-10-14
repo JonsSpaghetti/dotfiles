@@ -3,9 +3,6 @@
 ;; Place your private configuration here! Remember, you do not need to run 'doom
 ;; sync' after modifying this file!
 
-;; Ensure that if we conflict, use our keys instead of doom's keys
-(general-auto-unbind-keys)
-
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets.
 (setq user-full-name "Jon Tan"
@@ -31,17 +28,31 @@
 ;; `load-theme' function. This is the default:
 (with-eval-after-load 'doom-themes
   (doom-themes-treemacs-config))
-(global-tree-sitter-mode)
-(add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
+;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
+
+;; Prefer our keys over Doom’s defaults (after general is around)
+(after! general
+  (general-auto-unbind-keys))
+
+(setq user-full-name "Jon Tan"
+      user-mail-address "jon08192@gmail.com")
+
+(message "CONFIG.EL LOADING...")
+
+;; Theme / treemacs integration
+(with-eval-after-load 'doom-themes
+  (doom-themes-treemacs-config))
 (setq doom-theme 'doom-one)
 
-;; This will probably need to change every single time I get a new pc. Needed to compile parinfer-rust and put the build file somewhere
+;; Only enable tree-sitter if available in your setup
+(after! tree-sitter
+  (when (fboundp 'global-tree-sitter-mode)
+    (global-tree-sitter-mode))
+  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+
 (setq parinfer-rust-library "~/.emacs.d/parinfer-rust/libparinfer_rust.dylib")
 
-;; If you use `org' and don't want your org files in the default location below,
-;; change `org-directory'. It must be set before org loads!
-(setq org-directory "~/Documents/code/org-airbyte/")
-;; alist of org files i care about
+(setq org-directory "~/Documents/code/org-lambda/")
 (setq org-files
       '(("todo" . "todo.org")
         ("journal" . "journal.org")
@@ -54,85 +65,61 @@
   (directory-files org-directory t ".*\\.org$"))
 
 (defun org-file (name)
-  "Get org-file by NAME."
-  (concat org-directory (cdr (assoc name org-files))))
+  (concat (file-name-as-directory org-directory) (cdr (assoc name org-files))))
 
 (setq org-id-link-to-org-use-id t)
 
 (defun jmt/org-refile-with-link (&optional arg)
-  "Refile the current Org heading and leave behind a link to its new location.
-If a prefix argument ARG is provided, it is passed along to `org-refile'.
-This function saves a link to the current heading, inserts a new heading containing
-that link as a placeholder, and then refiles the original heading."
+  "Refile the current heading and leave behind a link to its new location."
   (interactive "P")
-  ;; Make sure we’re at the start of the heading.
   (org-back-to-heading)
   (let* ((refile-marker (point-marker))
-         (source-link (org-store-link nil)))  ; get a link to the current heading
-    ;; Insert a new heading to serve as the placeholder.
+         (source-link (or (org-store-link nil)
+                          (user-error "Could not create Org link for this heading"))))
     (org-insert-heading)
     (insert source-link)
-    ;; Return to the original heading.
     (goto-char refile-marker)
-    ;; Now perform the refile.
     (org-refile arg)))
-
-(defun jmt/org-agenda-precreate-meeting ()
-  "Precreate meeting from org agenda heading at point")
-
 
 (after! org
   (message "ORG STUFF LOADING...")
+  ;; Use our dynamic list of files as targets
   (add-to-list 'org-refile-targets '(jmt/org-refile-candidates :maxlevel . 3))
 
   (setq org-agenda-files
-        `(,(org-file "todo")
-          ,(org-file "journal")
-          ,(org-file "work-log")
-          ,(org-file "notes")
-          ,(org-file "meetings")
-          ,(org-file "one-on-one")))
-
+        (mapcar (lambda (n) (org-file n))
+                '("todo" "journal" "work-log" "notes" "meetings" "one-on-one")))
 
   (setq org-capture-templates
-        `(("t" "Todo"
-           entry (file+headline ,(org-file "todo") "Inbox")
-           "* TODO [#A] %?\n:Created: %U\n"
-           :empty-lines 0)
-          ("j" "Journal"
-           entry (file+datetree ,(org-file "journal"))
-           "* %?"
-           :empty-lines 1)
-          ("n" "Note"
-           entry (file+headline ,(org-file "notes") "Random Notes")
-           "** %?"
-           :empty-lines 0)
-          ("m" "Meeting"
-           entry (file+datetree ,(org-file "meetings"))
+        `(("t" "Todo"     entry (file+headline ,(org-file "todo") "Inbox")
+           "* TODO [#A] %?\n:Created: %U\n" :empty-lines 0)
+          ("j" "Journal"  entry (file+datetree ,(org-file "journal"))
+           "* %?" :empty-lines 1)
+          ("n" "Note"     entry (file+headline ,(org-file "notes") "Random Notes")
+           "** %?" :empty-lines 0)
+          ("m" "Meeting"  entry (file+datetree ,(org-file "meetings"))
            "* %u %? :meeting:%^g \nCreated: %U\nSCHEDULED: %T\n** Attendees\n*** \n** Notes\n** Action Items\n"
-           :tree-type week
-           :clock-in t
-           :clock-resume t
-           :empty-lines 0)
-          ("o" "One on One"
-           entry (file ,(org-file "one-on-one"))
+           :tree-type week :clock-in t :clock-resume t :empty-lines 0)
+          ("o" "One on One" entry (file ,(org-file "one-on-one"))
            "* %u 1:1 \nCreated: %U\n** Notes\n*** Working on\n%?"
            :empty-lines 0
            :refile-targets ((,(org-file "one-on-one") . (:tag . "oneonone"))))))
 
-  ;; TODO states
   (setq org-todo-keywords
-        '((sequence "TODO(t)" "NEXT(n)" "SCHEDULED(c)" "PLANNING(p)" "DELEGATED(e)" "IN-PROGRESS(s@/!)" "BLOCKED(b@)"  "|" "DONE(d!)" "WONT-DO(k@/!)")))
+        '((sequence "TODO(t)" "NEXT(n)" "SCHEDULED(c)" "PLANNING(p)"
+           "DELEGATED(e)" "IN-PROGRESS(s@/!)" "BLOCKED(b@)"
+           "|" "DONE(d!)" "WONT-DO(k@/!)")))
 
+  ;; Note: "DONE" (not "Done")
   (setq org-todo-keyword-faces
         '(("TODO" . (:foreground "GoldenRod" :weight bold))
           ("NEXT" . (:foreground "DarkOrange" :weight bold))
           ("PLANNING" . (:foreground "MediumPurple" :weight bold))
           ("DELEGATED" . (:foreground "DeepPink" :weight bold))
           ("SCHEDULED" . (:foreground "RoyalBlue1" :weight bold))
-          ("IN-PROGRESS" . (:foreground "CYAN" :weight bold))
+          ("IN-PROGRESS" . (:foreground "cyan" :weight bold))
           ("BLOCKED" . (:foreground "Red" :weight bold))
-          ("Done" . (:foreground "LimeGreen" :weight bold))
+          ("DONE" . (:foreground "LimeGreen" :weight bold))
           ("WONT-DO" . (:foreground "LimeGreen" :weight bold))
           ("[-]" . +org-todo-active)
           ("STRT" . +org-todo-active)
@@ -143,230 +130,107 @@ that link as a placeholder, and then refiles the original heading."
           ("NO" . +org-todo-cancel)
           ("KILL" . +org-todo-cancel)))
 
-  ;; Tag colors
   (setq org-tag-faces
-        '(
-          ("planning"  . (:foreground "mediumPurple1" :weight bold))
-          ("backend"   . (:foreground "royalblue1"    :weight bold))
+        '(("planning"  . (:foreground "MediumPurple1" :weight bold))
+          ("backend"   . (:foreground "RoyalBlue1"    :weight bold))
           ("frontend"  . (:foreground "forest green"  :weight bold))
           ("meeting"   . (:foreground "yellow1"       :weight bold))
           ("CRITICAL"  . (:foreground "red1"          :weight bold))))
 
-  (map!
-   :localleader
-   :prefix ("r" . "refile")
-   :map org-mode-map
-   :desc "refile copy" "c" #'org-refile-copy
-   :desc "refile" "r" #'org-refile
-   :desc "refile link" "l" #'jmt/org-refile-with-link))
-
+  (map! :localleader
+        :prefix ("r" "refile")
+        :map org-mode-map
+        :desc "refile copy" "c" #'org-refile-copy
+        :desc "refile"      "r" #'org-refile
+        :desc "refile link" "l" #'jmt/org-refile-with-link))
 
 (after! org-agenda
   (message "ORG AGENDA STUFF LOADING...")
   (setq org-super-agenda-groups
-        '(
-          (:name "Today"
-           :scheduled today)
+        '((:name "Today"        :scheduled today)
           (:name "WIP")
-
-          (:name "Up Next"
-           :todo ("NEXT"))
+          (:name "Up Next"      :todo ("NEXT"))
           (:name "Past Deadline"
            :and (:deadline past :todo ("TODO" "NEXT" "PLANNING" "DELEGATED" "SCHEDULED" "IN-PROGRESS")))
-          (:name "Important"
-           :priority> "B")
-          (:name "Meetings"
-           :tag ("meeting"))
-          (:name "Scheduled"
-           :scheduled t
-           :deadline t)
-          (:name "Workflow"
-           :tag ("emacs"))))
-
+          (:name "Important"    :priority> "B")
+          (:name "Meetings"     :tag ("meeting"))
+          (:name "Scheduled"    :scheduled t :deadline t)
+          (:name "Workflow"     :tag ("emacs"))))
   (setq org-super-agenda-header-map (make-sparse-keymap))
+  (setq org-agenda-start-day nil
+        org-agenda-span 'day
+        org-agenda-skip-scheduled-if-deadline-is-shown t)
+  (org-super-agenda-mode 1))
 
-  ;; Force org agenda to start today
-  (setq org-agenda-start-day nil)
+;; This must be a function symbol or lambda:
+(add-hook 'org-agenda-mode-hook #'display-line-numbers-mode)
 
-  (setq org-agenda-span 'day)
-  (setq org-agenda-skip-scheduled-if-deadline-is-shown t)
-  (org-super-agenda-mode t))
-
-(add-hook 'org-agenda-mode-hook (display-line-numbers-mode))
-
-(defun org-get-all-tags-list ()
-  (interactive)
-  (mapcar 'car (org-global-tags-completion-table)))
-
-;; Keymap for org agenda
 (after! evil-org-agenda
   (message "EVIL ORG AGENDA STUFF LOADING...")
-  (map!
-   :map org-agenda-mode-map
-   "<escape>" #'org-agenda-redo)
-  (map!
-   :localleader
-   :prefix ("v" . "view")
-   :map org-agenda-mode-map
-   :desc "day view" "d" #'org-agenda-day-view))
+  (map! :map org-agenda-mode-map "<escape>" #'org-agenda-redo)
+  (map! :localleader
+        :prefix ("v""view")
+        :map org-agenda-mode-map
+        :desc "day view" "d" #'org-agenda-day-view))
 
-
-;; This determines the style of line numbers in effect. If set to `nil', line
-;; numbers are disabled. For relative line numbers, set this to `relative'.
-;; Visual will allow us to skip over folded stuff
+;; Line numbers: Doom handles this per-mode; global is okay, but do it after evil.
 (setq display-line-numbers-type 'visual)
-(global-display-line-numbers-mode)
+(add-hook 'after-init-hook #'global-display-line-numbers-mode)
 
-;; Load private functions etc.
-(load! "./private.el")
+;; Load private bits only if present to avoid hard errors
+(let ((p (expand-file-name "private.el" doom-user-dir)))
+  (when (file-exists-p p)
+    (load! p)))
 
-;; Here are some additional functions/macros that could help you configure Doom:
-;;
-;; - `load!' for loading external *.el files relative to this one
-;; - `use-package!' for configuring packages `after!' for running code after a package has loaded
-;; - `add-load-path!' for adding directories to the `load-path', relative to
-;;   this file. Emacs searches the `load-path' when you load packages with
-;;   `require' or `use-package'.
-;; - `map!' for binding new keys
-;;
-;; To get information about any of these functions/macros, move the cursor over
-;; the highlighted symbol at press 'K' (non-evil users must press 'C-c c k').
-;; This will open documentation for it, including demos of how they are used.
-;;
-;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
-;; they are implemented.
-(setq evil-snipe-override-evil-repeat-keys nil)
-(setq doom-localleader-key ",")
-(setq doom-localleader-alt-key "M-,")
+(setq evil-snipe-override-evil-repeat-keys nil
+      doom-localleader-key ","
+      doom-localleader-alt-key "M-,")
 
-;; Allow python mode to automatically activate venvs
-;; (add-hook 'python-mode '(pyvenv-activate (concat projectile-project-root ".venv")))
-(add-hook 'python-mode '(pyvenv-workon projectile-project-name))
+;; Python venv on project name (fix: correct hook + lambda)
+(add-hook 'python-mode-hook
+          (defun jmt/py-auto-workon ()
+            (when (and (fboundp 'projectile-project-name)
+                       (fboundp 'pyvenv-workon))
+              (pyvenv-workon (projectile-project-name)))))
 
-(with-eval-after-load 'evil
+(after! evil
+  ;; keybindings that touch evil maps must run after evil loads
+  (define-key evil-normal-state-map (kbd "s") #'evil-substitute)
   (defalias #'forward-evil-word #'forward-evil-symbol)
-  ;; make evil-search-word look for symbol rather than word boundaries
   (setq-default evil-symbol-word-search t))
 
-(setq projectile-project-search-path '("~/code/" "~/Documents/code/"))
-(setq python-remove-cwd-from-path nil)
+(setq projectile-project-search-path '("~/code/" "~/Documents/code/")
+      python-remove-cwd-from-path nil)
 
-;; Avoid performance issues in files with very long lines.
 (global-so-long-mode 1)
 
-(define-key evil-normal-state-map (kbd "s") 'evil-substitute)
 (after! evil-snipe
   (evil-snipe-mode -1))
 
-(map! :localleader
-      :desc "under cursor"
-      "f w" #'search-thing-at-point-in-project)
+(map! :localleader :desc "under cursor" "f w" #'search-thing-at-point-in-project)
+(map! :leader      :desc "under cursor" "f w" #'search-thing-at-point-in-project)
 
-(map! :leader
-      :desc "under cursor"
-      "f w" #'search-thing-at-point-in-project)
+(map! :localleader :desc "find in project" "f \"" #'+vertico/project-search)
+(map! :leader      :desc "find in project" "f \"" #'+vertico/project-search)
 
-(map! :localleader
-      :desc "find in project"
-      "f \"" #'+vertico/project-search)
+(map! :localleader :desc "copy line location" "c l n" #'copy-current-line-position-to-clipboard)
 
-(map! :leader
-      :desc "find in project"
-      "f \"" #'+vertico/project-search)
+(map! :leader :prefix ("r" . "rename")
+      :desc "rename symbol" "n" #'lsp-rename)
 
-(map! :localleader
-      :desc "copy line location"
-      "c l n" #'copy-current-line-position-to-clipboard)
+(map! :leader :prefix ("1")
+      :desc "Show file name" "g" (cmd! (message "%s" (or buffer-file-name (buffer-name)))))
 
-;; Map paredit for clojure mode
-(map!
- :localleader
- :prefix ("p" . "paredit")
- :map (clojure-mode-map)
- :desc "paredit slurp forward" "s l" #'paredit-forward-slurp-sexp
- :desc "paredit slurp backward" "s h" #'paredit-backward-slurp-sexp
- :desc "paredit barf forward" "b l" #'paredit-forward-barf-sexp
- :desc "paredit barf backward" "b h" #'paredit-backward-barf-sexp)
-
-;; THis gets messed up w/ paredit
-;; (map!
-;;  :localleader
-;;  :prefix ("s" . "surround")
-;;  :map (clojure-mode-map)
-;;   :desc "paredit wrap round" "(" #'paredit-wrap-round
-;;   :desc "paredit wrap square" "[" #'paredit-wrap-square
-;;   :desc "paredit wrap curly" "{" #'paredit-wrap-curly)
-
-(map!
- :leader
- :prefix ("r" . "rename")
- :desc "rename symbol" "n" #'lsp-rename)
-
-;; (autoload 'enable-paredit-mode "paredit" "Turn on paredit" t)
-;; (eval-after-load 'clojure-mode
-;;   '((add-hook 'clojure-mode-hook #'enable-paredit-mode)
-;;     (add-hook 'clojurescript-mode-hook #'enable-paredit)))
-
-(map!
- :leader
- :prefix ("1")
- :desc "Show file name" "g" #'(lambda () (interactive) (message buffer-file-name)))
-
-(set-face-attribute 'variable-pitch nil :family "DejaVu Serif")
-(set-face-attribute 'variable-pitch nil :slant 'italic)
-(set-face-attribute 'variable-pitch nil :height 120)
-
+(set-face-attribute 'variable-pitch nil :family "DejaVu Serif" :slant 'italic :height 120)
 (with-eval-after-load 'org-faces
   (set-face-attribute 'org-table nil :inherit 'fixed-pitch))
 
 (setq orderless-matching-styles '(orderless-regexp orderless-flex))
 
-(dirvish-override-dired-mode)
+;; Only call Dirvish if installed
+(after! dirvish
+  (dirvish-override-dired-mode))
 
-;; multi-Vterm
-;; (add-hook 'vterm-mode-hook
-;; (lambda ()))
-                                        ; (define-key vterm-mode-map [return]                      #'vterm-send-return)
-
-;; (setq vterm-keymap-exceptions nil)
-;; (evil-define-key 'insert vterm-mode-map (kbd "C-e")      #'vterm--self-insert)
-;; (evil-define-key 'insert vterm-mode-map (kbd "C-f")      #'vterm--self-insert)
-;; (evil-define-key 'insert vterm-mode-map (kbd "C-a")      #'vterm--self-insert)
-;; (evil-define-key 'insert vterm-mode-map (kbd "C-v")      #'vterm--self-insert)
-;; (evil-define-key 'insert vterm-mode-map (kbd "C-b")      #'vterm--self-insert)
-;; (evil-define-key 'insert vterm-mode-map (kbd "C-w")      #'vterm--self-insert)
-;; (evil-define-key 'insert vterm-mode-map (kbd "C-u")      #'vterm--self-insert)
-;; (evil-define-key 'insert vterm-mode-map (kbd "C-d")      #'vterm--self-insert)
-;; (evil-define-key 'insert vterm-mode-map (kbd "C-n")      #'vterm--self-insert)
-;; (evil-define-key 'insert vterm-mode-map (kbd "C-m")      #'vterm--self-insert)
-;; (evil-define-key 'insert vterm-mode-map (kbd "C-p")      #'vterm--self-insert)
-;; (evil-define-key 'insert vterm-mode-map (kbd "C-j")      #'vterm--self-insert)
-;; (evil-define-key 'insert vterm-mode-map (kbd "C-k")      #'vterm--self-insert)
-;; (evil-define-key 'insert vterm-mode-map (kbd "C-r")      #'vterm--self-insert)
-;; (evil-define-key 'insert vterm-mode-map (kbd "C-t")      #'vterm--self-insert)
-;; (evil-define-key 'insert vterm-mode-map (kbd "C-g")      #'vterm--self-insert)
-;; (evil-define-key 'insert vterm-mode-map (kbd "C-c")      #'vterm--self-insert)
-;; (evil-define-key 'insert vterm-mode-map (kbd "C-SPC")    #'vterm--self-insert)
-;; (evil-define-key 'normal vterm-mode-map (kbd "C-d")      #'vterm--self-insert)
-;; (evil-define-key 'normal vterm-mode-map (kbd ",c")       #'multi-vterm)
-;; (evil-define-key 'normal vterm-mode-map (kbd ",n")       #'multi-vterm-next)
-;; (evil-define-key 'normal vterm-mode-map (kbd ",p")       #'multi-vterm-prev)
-;; (evil-define-key 'normal vterm-mode-map (kbd "i")        #'evil-insert-resume)
-;; (evil-define-key 'normal vterm-mode-map (kbd "o")        #'evil-insert-resume)
-;; (evil-define-key 'normal vterm-mode-map (kbd "<return>") #'evil-insert-resume)
-
-;; LSP java setup
-;; (add-hook 'java-mode-hook #'lsp)
-;; (setq lsp-java-vmargs '("-Xmx2G" "-Xms2G"))
-;; (setq read-process-output-max (* 1024 1024))
-;;;; This works because format on save enabled modes is negated
-;; (setq +format-on-save-enabled-modes
-;;       '(not emacs-lisp-mode java-mode))  ; elisp's mechanisms are good enough
-;; (setq lsp-java-format-settings-url "~/Downloads/intellij-java-google-style.xml")
-;; (setq lsp-java-format-settings-profile "GoogleStyle")
-
-(setq tab-always-indent 'complete)
 (add-to-list 'completion-styles 'initials t)
 
 (provide 'config)
-;;; config.el ends here
