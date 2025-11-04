@@ -103,7 +103,7 @@
           ("o" "One on One" entry (file ,(org-file "one-on-one"))
            "* %u 1:1 \nCreated: %U\n** Notes\n*** Working on\n%?"
            :empty-lines 0
-           :refile-targets ((,(org-file "one-on-one") . (:tag . "oneonone"))))))
+           :refile-targets ((,(org-file "one-on-one") . (:level . 1))))))
 
   (setq org-todo-keywords
         '((sequence "TODO(t)" "NEXT(n)" "SCHEDULED(c)" "PLANNING(p)"
@@ -215,6 +215,8 @@
 (map! :leader      :desc "find in project" "f \"" #'+vertico/project-search)
 
 (map! :localleader :desc "copy line location" "c l n" #'copy-current-line-position-to-clipboard)
+
+(map! :localleader      :desc "open definition in other window" "g d w" #'xref-find-definitions-other-window)
 
 (map! :leader :prefix ("r" "rename")
       :desc "rename symbol" "n" #'lsp-rename)
