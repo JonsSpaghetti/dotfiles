@@ -34,30 +34,41 @@
   (shell-command-on-region start end "clip.exe")
   (deactivate-mark))
 
-(defun run-python-test()
+(defun jmt/run-python-test()
   "Run docker-compose python test using django-admin based on file name."
   (interactive)
   (async-shell-command
-   (concat "docker-compose exec -T hippo django-admin test -k "
-           (concat
-            (mapconcat 'identity
-                       (butlast
-                        (split-string
-                         (s-replace "/" "."
-                                    (python-pytest--relative-file-name buffer-file-name))
-                         "\\."))
-                       ".")
-            (concat "."
-                    (python-pytest--current-defun))))))
-                         
-                 
+   (concat "docker compose -f $CODE_DIR/ll/devops2/compose.yaml exec www python manage.py test " (jmt/get-path-after-www) "." (jmt/django-test-node-for-manage-test))))
+
+(defun jmt/django-test-node-for-manage-test ()
+  "Get the test node so we can run docker compose exec manage.py test"
+  (replace-regexp-in-string "::" "." (python-pytest--node-id-def-or-class-at-point)))
+
+(defun jmt/get-path-after-www ()
+  "Get the file path after 'www/' with slashes replaced by dots, without .py extension."
+  (interactive)
+  (let* ((file-path (buffer-file-name))
+         result)
+    (unless file-path
+      (error "Buffer is not visiting a file"))
+
+    (if (string-match "www/\\(.*\\)\\.py$" file-path)
+        (progn
+          (setq result (match-string 1 file-path))
+          (setq result (replace-regexp-in-string "/" "." result))
+          (kill-new result)
+          (message "Path: %s (copied to clipboard)" result)
+          result)
+      (error "Could not find 'www/' in file path or file is not a .py file"))))
+
+
 (defun copy-current-line-position-to-clipboard ()
-    "Copy current line in file to clipboard as '</path/to/file>:<line-number>'."
-    (interactive)
-    (let ((path-with-line-number
-           (concat (dired-replace-in-string (expand-file-name "Documents/code/" (getenv "HOME")) "" (buffer-file-name)) ":" (number-to-string (line-number-at-pos)))))
-      (kill-new path-with-line-number)
-      (message (concat path-with-line-number " copied to clipboard"))))
+  "Copy current line in file to clipboard as '</path/to/file>:<line-number>'."
+  (interactive)
+  (let ((path-with-line-number
+         (concat (dired-replace-in-string (expand-file-name "Documents/code/" (getenv "HOME")) "" (buffer-file-name)) ":" (number-to-string (line-number-at-pos)))))
+    (kill-new path-with-line-number)
+    (message (concat path-with-line-number " copied to clipboard"))))
 
 (defun arrayify (separator surround)
   "Converts the current region lines to a single line, CSV value, separated by the provided separator string."
@@ -65,8 +76,8 @@
   (setq current-region-string (buffer-substring-no-properties (region-beginning) (region-end)))
   (insert
    (mapconcat (lambda (str) (if (> (length str) 0) (concat surround str surround)))
-        (split-string current-region-string "\n")
-        separator)))
+              (split-string current-region-string "\n")
+              separator)))
 
 (defun pretty-arrayify (separator surround)
   "Converts the current region lines to a single line, CSV value, separated by the provided separator string."
@@ -74,8 +85,8 @@
   (setq current-region-string (buffer-substring-no-properties (region-beginning) (region-end)))
   (insert
    (mapconcat (lambda (str) (if (> (length str) 0) (concat surround str surround "\n")))
-        (split-string current-region-string "\n")
-        separator)))
+              (split-string current-region-string "\n")
+              separator)))
 
 (defun unarrayify (separator)
   "Converts the current region line, as a csv string, to a set of independent lines, splitting the string based on the provided separator."
@@ -121,7 +132,7 @@
   "Copy file name to clipboard"
   (interactive)
   (kill-new (file-relative-name buffer-file-name (projectile-project-root))))
-                                                    
+
 (defun jon-scratch-cmd ()
   "Do whatever I want"
   (interactive)

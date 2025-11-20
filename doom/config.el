@@ -8,8 +8,6 @@
 (setq user-full-name "Jon Tan"
       user-mail-address "jon08192@gmail.com")
 
-(message "CONFIG.EL LOADING...")
-
 ;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
 ;; are the three important ones:
 ;;
@@ -36,8 +34,6 @@
 
 (setq user-full-name "Jon Tan"
       user-mail-address "jon08192@gmail.com")
-
-(message "CONFIG.EL LOADING...")
 
 ;; Theme / treemacs integration
 (with-eval-after-load 'doom-themes
@@ -202,6 +198,15 @@
 
 (setq projectile-project-search-path '("~/code/" "~/Documents/code/")
       python-remove-cwd-from-path nil)
+
+;; pytest stuff
+(setq python-pytest-executable "docker compose -f $CODE_DIR/ll/devops2/compose.yaml exec www pytest")
+(setq python-pytest-confirm t)
+(setq python-pytest-project-root-override nil)
+
+(map! :leader :desc "run python test" "t t" #'jmt/run-python-test)
+
+
 
 (global-so-long-mode 1)
 
