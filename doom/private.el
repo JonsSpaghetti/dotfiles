@@ -47,19 +47,59 @@
 (defun jmt/get-path-after-www ()
   "Get the file path after 'www/' with slashes replaced by dots, without .py extension."
   (interactive)
-  (let* ((file-path (buffer-file-name))
-         result)
+  (let* ((file-path (buffer-file-name)))
     (unless file-path
       (error "Buffer is not visiting a file"))
 
     (if (string-match "www/\\(.*\\)\\.py$" file-path)
-        (progn
-          (setq result (match-string 1 file-path))
-          (setq result (replace-regexp-in-string "/" "." result))
-          (kill-new result)
-          (message "Path: %s (copied to clipboard)" result)
-          result)
+        (match-string 1 file-path)
       (error "Could not find 'www/' in file path or file is not a .py file"))))
+
+(defun jmt/python-pytest-run-def-or-class-at-point-dwim (file func args)
+  "Run pytest on FILE using FUNC at point as the node-id.
+
+If `python-pytest--test-file-p' returns t for FILE (i.e. the file
+is a test file), then this function results in the same behavior
+as calling `python-pytest-run-def-at-point'. If
+`python-pytest--test-file-p' returns nil for FILE (i.e. the
+current file is not a test file), then this function will try to
+find related test files and test defs (i.e. sensible match) for
+the current file and the def at point.
+
+Additional ARGS are passed along to pytest.
+With a prefix argument, allow editing."
+  (interactive
+   (list
+    (jmt/get-path-after-www)
+    (python-pytest--node-id-def-or-class-at-point)
+    (transient-args 'python-pytest-dispatch)))
+  (unless (python-pytest--test-file-p file)
+    (setq
+     file (python-pytest--sensible-test-file file)
+     func (python-pytest--make-test-name func))
+    (unless python-pytest-strict-test-name-matching
+      (let ((k-option (-first (-partial #'s-prefix-p "-k") args)))
+        (when k-option
+          ;; try to use the existing ‘-k’ option in a sensible way
+          (setq args (-remove-item k-option args)
+                k-option (-->
+                          k-option
+                          (s-chop-prefix "-k" it)
+                          (s-trim it)
+                          (if (s-contains-p " " it) (format "(%s)" it) it))))
+        (setq args (-snoc
+                    args
+                    (python-pytest--shell-quote file)
+                    (if k-option
+                        (format "-k %s and %s" func k-option)
+                      (format "-k %s" func)))
+              file nil
+              func nil))))
+  (python-pytest--run
+   :args args
+   :file file
+   :node-id func
+   :edit current-prefix-arg))
 
 
 (defun copy-current-line-position-to-clipboard ()

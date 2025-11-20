@@ -204,7 +204,9 @@
 (setq python-pytest-confirm t)
 (setq python-pytest-project-root-override nil)
 
-(map! :leader :desc "run python test" "t t" #'jmt/run-python-test)
+
+(after! python
+  (map! :localleader :desc "run python test" "t t" #'jmt/python-pytest-run-def-or-class-at-point-dwim))
 
 
 
