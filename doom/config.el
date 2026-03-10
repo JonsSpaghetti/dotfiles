@@ -144,7 +144,8 @@
   (message "ORG AGENDA STUFF LOADING...")
   (setq org-super-agenda-groups
         '((:name "Today"        :scheduled today)
-          (:name "WIP")
+          (:name "In Progress"      :todo ("IN-PROGRESS"))
+          (:name "Blocked"      :todo ("BLOCKED"))
           (:name "Up Next"      :todo ("NEXT"))
           (:name "Past Deadline"
            :and (:deadline past :todo ("TODO" "NEXT" "PLANNING" "DELEGATED" "SCHEDULED" "IN-PROGRESS")))
@@ -240,6 +241,10 @@
 ;; Only call Dirvish if installed
 (after! dirvish
   (dirvish-override-dired-mode))
+
+
+;; restclient.el
+(setq restclient-use-curl t)
 
 (add-to-list 'completion-styles 'initials t)
 

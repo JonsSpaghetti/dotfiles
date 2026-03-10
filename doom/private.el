@@ -53,7 +53,7 @@
 
     (if (string-match "www/\\(.*\\)\\.py$" file-path)
         (match-string 1 file-path)
-      (error "Could not find 'www/' in file path or file is not a .py file"))))
+      (error"Could not find 'www/' in file path or file is not a .py file"))))
 
 (defun jmt/python-pytest-run-def-or-class-at-point-dwim (file func args)
   "Run pytest on FILE using FUNC at point as the node-id.

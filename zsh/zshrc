@@ -61,6 +61,8 @@ alias emacs=$(brew --prefix)/opt/emacs-mac/Emacs.app/Contents/MacOS/Emacs.sh "$@
 win() {
   tmux split-window -h -c "#{pane_current_path}"
   tmux split-window -v -c "#{pane_current_path}"
+  tmux select-pane -L
+  tmux split-window -v -c "#{pane_current_path}"
 }
 
 set -o vi
@@ -155,3 +157,19 @@ export PATH="$PYENV_ROOT/bin:$PATH"
 
 # uv
 . "$HOME/.local/bin/env"
+
+#tmux
+if [ ! -n "$TMUX" ]; then
+	tmux new -s emax -d
+	tmux send-keys -t emax.0 "emacs" ENTER
+	tmux new -s abc -d
+	tmux send-keys -t abc.0 "goll" ENTER
+	tmux send-keys -t abc.0 "win" ENTER
+fi
+
+# Go 
+export GOBIN=$HOME/go/bin
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOPATH/bin:$GOROOT/bin
+# for my boy claude
+export ENABLE_LSP_TOOLS=1
