@@ -46,6 +46,10 @@
     (global-tree-sitter-mode))
   (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
 
+;; python-ts-mode instead of python-mode
+(setq major-mode-remap-alist
+      '((python-mode . python-ts-mode)))
+
 (setq parinfer-rust-library "~/.emacs.d/parinfer-rust/libparinfer_rust.dylib")
 
 (setq org-directory "~/Documents/code/org-lambda/")
@@ -232,6 +236,11 @@
 (map! :leader :prefix ("1")
       :desc "Show file name" "g" (cmd! (message "%s" (or buffer-file-name (buffer-name)))))
 
+(map! :localleader :prefix ("c")
+      :desc "claude code ide" "c" #'claude-code-ide-menu
+      :desc "claude code hide" "h" #'claude-code-ide-toggle
+      :desc "claude code esc" "ESC" #'claude-code-ide-send-escape)
+
 (set-face-attribute 'variable-pitch nil :family "DejaVu Serif" :slant 'italic :height 120)
 (with-eval-after-load 'org-faces
   (set-face-attribute 'org-table nil :inherit 'fixed-pitch))
@@ -245,6 +254,20 @@
 
 ;; restclient.el
 (setq restclient-use-curl t)
+
+;;claude code ide
+(use-package! claude-code-ide
+  :bind ("C-c C-'" . claude-code-ide-menu) ; Set your favorite keybinding
+  :config
+  (claude-code-ide-emacs-tools-setup)) ; Optionally enable Emacs MCP tools
+
+;; Open Claude at the bottom with custom height
+;; (setq claude-code-ide-window-side 'bottom
+;;       claude-code-ide-window-height 30)
+(setq claude-code-ide-window-side 'right)
+;; But realistically we never do this because the scroll is fucking horrendous
+(setq claude-code-ide-mcp-server-port 9100)
+
 
 (add-to-list 'completion-styles 'initials t)
 
