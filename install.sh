@@ -9,6 +9,7 @@ function unlink_symlinks {
 
 if [ "$1" == "first" ]; then
     echo "This is the first run"
+    echo $OSTYPE
     if [[ "$OSTYPE" == "linux-gnu"*  ]]; then
 	sudo add-apt-repository ppa:neovim-ppa/unstable
 	sudo apt update
@@ -19,7 +20,7 @@ if [ "$1" == "first" ]; then
 	sudo dpkg -i ripgrep_11.0.2_amd64.deb
         sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
          git clone https://github.com/pyenv/pyenv.git ~/.pyenv
-    elif [[ "$OSTYPE" == "darwin24.0"  ]]; then
+    elif [[ "$OSTYPE" == "darwin24.0" || $OSTYPE == "darwin24" ]]; then
 	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 	sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
         brew install fzf \
