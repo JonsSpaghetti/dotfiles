@@ -52,7 +52,7 @@
 
 (setq parinfer-rust-library "~/.emacs.d/parinfer-rust/libparinfer_rust.dylib")
 
-(setq org-directory "~/Documents/code/org-lambda/")
+(setq org-directory "~/Documents/code/org-stuff/")
 (setq org-files
       '(("todo" . "todo.org")
         ("journal" . "journal.org")
