@@ -9,8 +9,9 @@ export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.g
 # # Bash shell executes this function just before displaying the PS1 variable
 # export PROMPT_COMMAND='updatePrompt'
 
-# File where we'll keep this machine's aliases
+# File where we'll keep this machine's aliases/cmds
 test -f ~/.zshrc.aliases && source ~/.zshrc.aliases
+test -f ~/.zshrc.cmds && source ~/.zshrc.cmds
 
 test -f ~/.zshrc.airbyte && source ~/.zshrc.airbyte
 test -f ~/.zshrc.lambda && source ~/.zshrc.lambda

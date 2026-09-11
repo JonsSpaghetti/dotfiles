@@ -4,6 +4,7 @@ function unlink_symlinks {
 	unlink ~/.vimrc
 	unlink ~/.zshrc
 	unlink ~/.zshrc.aliases
+	unlink ~/.zshrc.cmds
 	unlink ~/.tmux.conf
 }
 
@@ -76,6 +77,7 @@ function create_symlinks {
 	ln -s $(pwd)/vim/vimrc ~/.config/nvim/init.vim
 	ln -s $(pwd)/zsh/zshrc ~/.zshrc
 	ln -s $(pwd)/zsh/zshrc-aliases ~/.zshrc.aliases
+	ln -s $(pwd)/zsh/zshrc-cmds ~/.zshrc.cmds
 	ln -s $(pwd)/tmux/conf ~/.tmux.conf
 	ln -s $(pwd)/doom/config.el ~/.doom.d/config.el
 	ln -s $(pwd)/doom/init.el ~/.doom.d/init.el
