@@ -60,6 +60,7 @@
         ("notes" . "notes.org")
         ("meetings" . "meetings.org")
         ("one-on-one" . "one-on-one.org")))
+(setq org-startup-with-inline-images t)
 
 (defun jmt/org-refile-candidates ()
   (directory-files org-directory t ".*\\.org$"))
